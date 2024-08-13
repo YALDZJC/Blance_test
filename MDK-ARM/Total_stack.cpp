@@ -58,7 +58,8 @@ void Send_GIMBAL_6020_CAN()
 //发送大喵电机
 void Send_L_LEG_DM_CAN()
 {
-	RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+
+
 }
 
 //发送大喵电机
@@ -129,7 +130,9 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
 	if(hfdcan == &hfdcan1)
 	{
-
+		R_joint_2.parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
+		R_joint_3.parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
+		R_Wheel.parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
 	}
 }
 
@@ -145,6 +148,7 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 	{
 		L_joint_0.parse(GIMBAL_RxHeader, GIMBAL_RxHeaderData);
 		L_joint_1.parse(GIMBAL_RxHeader, GIMBAL_RxHeaderData);
+		L_Wheel.parse(GIMBAL_RxHeader, GIMBAL_RxHeaderData);
 	}
 }
 
@@ -170,14 +174,76 @@ void Get_Gimbal_to_Chassis(UART_HandleTypeDef* huart)
 	}
 }
 
-void ChassisL_feedback_update()
+void ChassisL_Init()
 {
-		VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
-		VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
+	for(int j=0;j<10;j++)
+	{
+		L_joint_0.on();
+		RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+
+	  osDelay(1);
+	}
+	for(int j=0;j<10;j++)
+	{
+		L_joint_1.on();
+		RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_1.send_data);//发送
+
+	  osDelay(1);
+	}
+	for(int j=0;j<10;j++)
+	{
+		L_Wheel.on();
+		RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+
+	  osDelay(1);
+	}
 }
 
-void Chassis_Task()
+void ChassisR_Init()
 {
+	for(int j=0;j<10;j++)
+	{
+		R_joint_2.on();
+		RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+
+	  osDelay(1);
+	}
+	for(int j=0;j<10;j++)
+	{
+		R_joint_3.on();
+		RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+
+	  osDelay(1);
+	}
+	for(int j=0;j<10;j++)
+	{
+		R_Wheel.on();
+		RM_FDorCAN_Send(&hfdcan1, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+
+	  osDelay(1);
+	}
+}
+
+void ChassisL_feedback_update()
+{
+	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
+	VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
+}
+
+void ChassisR_feedback_update()
+{
+	VMC_leg_R.VMC_data.phi1=pi/2.0f + R_joint_2.DM_Data.position;
+	VMC_leg_R.VMC_data.phi4=pi/2.0f + R_joint_3.DM_Data.position;
+}
+
+void Chassis_Task_L()
+{
+  while(INS.ins_flag==0)
+	{//等待加速度收敛
+	  osDelay(1);	
+	}	
+	ChassisL_Init();
+	
 	while(1)
 	{	
 		tar_L0 += RC_LY*tar_dc;
@@ -186,6 +252,7 @@ void Chassis_Task()
 		if(tar_L0 < 5)
 			tar_L0 = 5;
 			
+		ChassisL_feedback_update();
 
 		VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], 0.001);
 		
@@ -210,56 +277,133 @@ void Chassis_Task()
 		VMC_leg_L.Jacobian();
 		
 		//遥控器
-		if((Emergency_Stop == true) && (dir == false))
+		if(is == 0)
 		{
 			//打开电机			
-			if(dm_is_open == true)//首次启动发送
-			{
-					L_joint_0.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-					L_joint_1.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-					dm_is_open = false;
-					send_DM_motor_ms = 0;
-			}
+			L_joint_0.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			L_joint_1.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			L_Wheel.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			osDelay(Up_Chassis_Time);
 		}
 		else
 		{
 			//打开电机			
-			if(dm_is_open == false)//首次启动发送
-			{
-        L_joint_0.on();
-				osDelay(100);
-        L_joint_1.on();
-				osDelay(100);
-            dm_is_open = true; // 标记电机已经打开
+			L_joint_0.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
+			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			osDelay(Up_Chassis_Time);
 
-				send_DM_motor_ms++;
-			} 
-			else 
-			{
-				if(dm_is_open == true)
-				{
-					L_joint_0.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-					L_joint_1.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
-				}
-			}
+			L_joint_1.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
+			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			L_Wheel.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+			osDelay(Up_Chassis_Time);
 		}
-		osDelay(1);
+	}
+}
+
+void Chassis_Task_R()
+{
+  while(INS.ins_flag==0)
+	{//等待加速度收敛
+	  osDelay(1);	
+	}	
+	ChassisR_Init();
+	
+	while(1)
+	{	
+		tar_L0 += RC_LY*tar_dc;
+		if(tar_L0 > 18)
+			tar_L0 = 18;
+		if(tar_L0 < 5)
+			tar_L0 = 5;
+			
+		ChassisR_feedback_update();
+
+		VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], 0.001);
+		
+		for(int i=0;i<12;i++)
+		{
+			LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);	
+		}
+		
+	//右边髋关节输出力矩				
+		VMC_leg_L.VMC_data.Tp=(LQR_K[6]*(VMC_leg_L.VMC_data.theta-0.0f)
+													+LQR_K[7]*(VMC_leg_L.VMC_data.d_theta-0.0f)
+													+LQR_K[10]*(INS.Pitch-0.0f)
+													+LQR_K[11]*(INS.Gyro[0]-0.0f));
+		
+		P_out = Kp*(tar_L0/100 - VMC_leg_L.VMC_data.L0);
+		D_out = Kd*(0 - VMC_leg_L.VMC_data.d_L0);
+		
+//		LEG_F0_PID.GetPidPos(LEG_F0_Init, tar_L0/100, VMC_leg_L.VMC_data.L0, 3);
+		
+		VMC_leg_L.VMC_data.F0 = FF + P_out + D_out;
+		
+		VMC_leg_L.Jacobian();
+		
+		//遥控器
+		if(is == 0)
+		{
+			//打开电机			
+			R_joint_2.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			R_joint_3.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			R_Wheel.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan1, R_Wheel.DM_Data.Send_ID, R_Wheel.send_data);//发送
+			osDelay(Up_Chassis_Time);
+		}
+		else
+		{
+			//打开电机			
+			R_joint_2.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
+			RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			R_joint_3.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
+			RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+			osDelay(Up_Chassis_Time);
+
+			R_Wheel.ctrl_motor(0, 0, 0, 0, 0);
+			RM_FDorCAN_Send(&hfdcan1, R_Wheel.DM_Data.Send_ID, R_Wheel.send_data);//发送
+			osDelay(Up_Chassis_Time);
+		}
 	}
 }
 
 void DM_Send_Task()
 {
 	//发送数据
-	if(send_motor_ms == 0)
-	{
-		Send_L_LEG_DM_CAN();
-	}
-	else
-	{
-		Send_R_LEG_DM_CAN();
-	}
-	send_motor_ms++;
-	send_motor_ms %= 2;
+//	if(INS.ins_flag == 1)
+//	{
+//		if(send_motor_ms == 0)
+//		{
+//			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+//		}
+//		if(send_motor_ms == 1)
+//		{
+//			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_1.send_data);//发送
+//		}
+//		if(send_motor_ms == 2)
+//		{
+//			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送	}
+//		}
+//		send_motor_ms++;
+//		send_motor_ms %= 3;
+//	}
 }
 
 void Send_Vofa_Task()

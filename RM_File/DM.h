@@ -2,6 +2,7 @@
 
 #include "RM_StaticTime.h"//静态定时器
 #include <stdint.h>
+#include "RM_CAN.h"
 
 //根据上位机调节
 #define L_LEG_CAN_ID 8

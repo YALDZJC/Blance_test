@@ -116,33 +116,6 @@ uint8_t send_CHASSIS_motor_size;//用于3508与6020错开发送
 
 RM_StaticTime Total_tasks_staticTime;//控制时间
 
-WheatWheel_t wheel;
-WheatWheel_t wheel_e;
-
-float diagonally_factor = 0;//斜向因子
-LADRC_quadratic wheel_ladrc_left_1 (TD_quadratic(50,0,0),8,400,60,16384);
-LADRC_quadratic wheel_ladrc_left_2 (TD_quadratic(50,0,0),8,400,60,16384);
-LADRC_quadratic wheel_ladrc_right_1(TD_quadratic(50,0,0),8,400,60,16384);
-LADRC_quadratic wheel_ladrc_right_2(TD_quadratic(50,0,0),8,400,60,16384);
-
-RM_PID AGV_pid_forward;
-RM_PID AGV_pid_back;
-
-Kpid_t AGV_pid_forward_Init(20, 0, 1);
-Kpid_t AGV_pid_back_Init(20, 0, 1);
-
-//底盘TD
-TD_quadratic wheel_td_left_1 (150);
-TD_quadratic wheel_td_left_2 (150);
-TD_quadratic wheel_td_right_1(150);
-TD_quadratic wheel_td_right_2(150);
-
-TD_quadratic td_vw(10);
-TD_quadratic td_vx(4);
-TD_quadratic td_vy(4);
-
-float shift_vxy_zoom = 1;//留给shift冲刺模式，速度因子
-
 /***************************云台*********************************/
 #define Dead_Zone 15
 
@@ -173,8 +146,11 @@ DM R_joint_2(6, 3, 0);
 DM R_joint_3(8, 4, 0);
 DM R_Wheel(1, 0, 1);
 
+uint8_t send_motor_ms;
 bool dm_is_open = false;//达妙启动标志位
-uint16_t send_motor_ms;
+uint8_t Up_Chassis_Time = 1;
+
+uint8_t is = 0;
 //云台PID相关
 
 //PID参数初始化
@@ -197,6 +173,7 @@ TD_quadratic dianlutd(100);
 int16_t dianlupid;
 
 VMC_leg_t VMC_leg_L( L1, L2, L3, L4, L5 );
+VMC_leg_t VMC_leg_R( L1, L2, L3, L4, L5 );
 
 float tar_L0, FF;
 float Kp = -200,Kd = -40,P_out,D_out;

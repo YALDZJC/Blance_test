@@ -191,8 +191,7 @@ void Chassis_L_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-		Chassis_Task();
-		osDelay(1);
+		Chassis_Task_L();
   }
   /* USER CODE END Chassis_L_Task */
 }
@@ -210,7 +209,7 @@ void Chassis_R_TASK(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		Chassis_Task_R();
   }
   /* USER CODE END Chassis_R_TASK */
 }

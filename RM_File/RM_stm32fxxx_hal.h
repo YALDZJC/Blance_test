@@ -44,5 +44,4 @@ RM_FDorCAN_RxFifo0PendingCallback 原can或者facan的接收回调函数，注�
   #define RM_FDorCAN_Init(x)                    RM_FDCan_Init(x)
   #define RM_FDorCAN_Send(x,ID,s_data)          RM_FDCan_Send(x,ID,s_data)
 #endif
-
 /**************************************************************************/
