@@ -1,0 +1,169 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: μVision V5.32.0.0
+Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: a Administrator, a, LIC=NQQMA-1NSTQ-BSUYX-HYH2V-A7NG4-73RSR
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.32.0.0
+Toolchain Path:  E:\Keil5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         SARMCM3.DLL V5.32.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      CMSIS_AGDI.dll V1.32.12.0
+Dialog DLL:      TCM.DLL V1.46.0.0
+ 
+<h2>Project:</h2>
+F:\Blance_DEMO\Blance_DEMO\MDK-ARM\Blance_DEMO.uvprojx
+Project File Date:  08/13/2024
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'E:\Keil5\ARM\ARMCC\Bin'
+Build target 'Blance_DEMO'
+compiling Total_stack.cpp...
+../RM_File/RM_Can.h(49): warning:  #177-D: variable "TxMailbox"  was declared but never referenced
+      uint32_t TxMailbox;
+../RM_File/RM_stm32fxxx_hal.h(48): warning:  #1-D: last line of file ends without a newline
+  /**************************************************************************/
+../RM_File/ladrc.h(13): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      y2 = k * x1 + (1.0 - k) * x2;
+../RM_File/ladrc.h(71): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      fhan_a1 = sqrtf(fhan_d * (fhan_d + 8.0 * fabs(fhan_y)));
+../RM_File/ladrc.h(72): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      fhan_a2 = fhan_a0 + Fign_Fun(fhan_y) * (fhan_a1 - fhan_d) * 0.5;
+../RM_File/ladrc.h(73): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      fhan_a = (fhan_a0 + fhan_y) * Fsg_Fun(fhan_y,fhan_d) + fhan_a2 * (1.0 - Fsg_Fun(fhan_y,fhan_d));
+../RM_File/ladrc.h(74): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      return -r * (fhan_a / fhan_d) * Fsg_Fun(fhan_a,fhan_d) - r * Fign_Fun(fhan_a) * (1.0 - Fsg_Fun(fhan_a,fhan_d));
+../RM_File/ladrc.h(88): warning:  #1299-D: members and base-classes will be initialized in declaration order, not in member initialisation list order
+  	 :r(r),h(h),max_x2(max_x2),Fun(Fun)
+../RM_File/ladrc.h(123): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          this->r2_1 = 1.0 / (2.0 * this->r);//r2_1鏄?2r鐨勫�掓暟
+../RM_File/ladrc.h(195): warning:  #1299-D: members and base-classes will be initialized in declaration order, not in member initialisation list order
+  		:td(td),b(b),max_u(max_u),h(h),wc(wc),w0(w0),max_z2(max_z2)
+../RM_File/ladrc.h(195): warning:  #1299-D: members and base-classes will be initialized in declaration order, not in member initialisation list order
+  		:td(td),b(b),max_u(max_u),h(h),wc(wc),w0(w0),max_z2(max_z2)
+../RM_File/ladrc.h(240): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            this->bt1 = 2.0 * this->w0;//尾1
+../RM_File/ladrc.h(254): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            this->bt1 = 3.0 * this->w0;//尾1
+../RM_File/ladrc.h(255): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            this->bt2 = 3.0 * this->w0 * this->w0;//尾2
+../RM_File/ladrc.h(333): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+            this->kd = 2.0 * this->wc;
+../RM_File/RM_PID.h(218): warning:  #1299-D: members and base-classes will be initialized in declaration order, not in member initialisation list order
+  	:dt(dt),k(k),max_target_e(max_target_e),max_cout(max_cout),cout_k(cout_k){}
+../RM_File/RM_PID.h(218): warning:  #1299-D: members and base-classes will be initialized in declaration order, not in member initialisation list order
+  	:dt(dt),k(k),max_target_e(max_target_e),max_cout(max_cout),cout_k(cout_k){}
+../RM_File/RM_PID.h(294): warning:  #427-D: qualified name is not allowed in member declaration
+  	double UDE::UpData(double Xnt, double u, double err);
+../RM_File/RM_Wheel.h(22): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[0] = ((1.0 - ky) * vx + (1.0 - kx) * vy - vw);
+../RM_File/RM_Wheel.h(22): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[0] = ((1.0 - ky) * vx + (1.0 - kx) * vy - vw);
+../RM_File/RM_Wheel.h(23): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[1] = ((1.0 - ky) * vx - (1.0 - kx) * vy + vw);
+../RM_File/RM_Wheel.h(23): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[1] = ((1.0 - ky) * vx - (1.0 - kx) * vy + vw);
+../RM_File/RM_Wheel.h(24): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[2] = ((1.0 - ky) * vx + (1.0 - kx) * vy + vw);
+../RM_File/RM_Wheel.h(24): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[2] = ((1.0 - ky) * vx + (1.0 - kx) * vy + vw);
+../RM_File/RM_Wheel.h(25): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[3] = ((1.0 - ky) * vx - (1.0 - kx) * vy - vw);
+../RM_File/RM_Wheel.h(25): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->speed[3] = ((1.0 - ky) * vx - (1.0 - kx) * vy - vw);
+../RM_File/RM_Wheel.h(62): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->angle[0] = atan2(tempvx[0] , tempvy[0]) * 180 / 3.14 * 8191 / 360;         
+../RM_File/RM_Wheel.h(63): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->angle[1] = atan2(tempvx[1] , tempvy[1]) * 180 / 3.14 * 8191 / 360;
+../RM_File/RM_Wheel.h(64): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->angle[2] = atan2(tempvx[2] , tempvy[2]) * 180 / 3.14 * 8191 / 360;          
+../RM_File/RM_Wheel.h(65): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+        this->angle[3] = atan2(tempvx[3] , tempvy[3]) * 180 / 3.14 * 8191 / 360;
+../RM_File/RM_Wheel.h(38): warning:  #177-D: variable "angle"  was declared but never referenced
+        float angle = 45 * 3.14 / 180; 
+../RM_File/DM.h(240): warning:  #1-D: last line of file ends without a newline
+  }
+../RM_File/RM_CHxxxGy.h(45): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.ASx = (float)((int16_t)((RxHeaderData[1] << 8) | RxHeaderData[0])) * 0.01;
+../RM_File/RM_CHxxxGy.h(46): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.ASy = (float)((int16_t)((RxHeaderData[3] << 8) | RxHeaderData[2])) * 0.01;
+../RM_File/RM_CHxxxGy.h(47): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.ASz = (float)((int16_t)((RxHeaderData[5] << 8) | RxHeaderData[4])) * 0.01;
+../RM_File/RM_CHxxxGy.h(51): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.x = (float)((int16_t)((RxHeaderData[1] << 8) | RxHeaderData[0])) * 0.01;
+../RM_File/RM_CHxxxGy.h(52): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.y = (float)((int16_t)((RxHeaderData[3] << 8) | RxHeaderData[2])) * 0.01;
+../RM_File/RM_CHxxxGy.h(53): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		this->gy.z = (float)((int16_t)((RxHeaderData[5] << 8) | RxHeaderData[4])) * 0.01;
+../RM_File/VMC.h(106): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
+../RM_File/VMC.h(117): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	this->VMC_data.theta = pi/2.0f-Pitch_L - this->VMC_data.phi0;//得到状态变量1
+../RM_File/VMC.h(158): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
+../RM_File/VMC.h(169): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//得到状态变量1
+Total_stack.cpp(175): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
+Total_stack.cpp(176): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  		VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
+Total_stack.cpp: 44 warnings, 0 errors
+linking...
+Program Size: Code=43128 RO-data=6116 RW-data=780 ZI-data=44404  
+FromELF: creating hex file...
+"Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 44 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: ARM
+                http://www.keil.com/pack/ARM.CMSIS.5.7.0.pack
+                ARM.CMSIS.5.7.0
+                CMSIS (Cortex Microcontroller Software Interface Standard)
+   * Component: CORE Version: 5.4.0
+   * Component: DSP Variant: Source Version: 1.8.0
+
+Package Vendor: Keil
+                https://www.keil.com/pack/Keil.STM32H7xx_DFP.3.1.1.pack
+                Keil.STM32H7xx_DFP.3.1.1
+                STMicroelectronics STM32H7 Series Device Support and Examples
+
+<h2>Collection of Component include folders:</h2>
+  .\RTE\_Blance_DEMO
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\Core\Include
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\PrivateInclude
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\Keil\STM32H7xx_DFP\3.1.1\Drivers\CMSIS\Device\ST\STM32H7xx\Include
+
+<h2>Collection of Component Files used:</h2>
+
+   * Component: ARM::CMSIS:CORE:5.4.0
+      Include file:  CMSIS\Core\Include\tz_context.h
+
+   * Component: ARM::CMSIS:DSP:Source:1.8.0
+      Include file:  CMSIS\DSP\Include\arm_math.h
+      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
+      Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
+      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
+      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
+      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
+      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
+      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
+      Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
+      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
+      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
+      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
+Build Time Elapsed:  00:00:05
+</pre>
+</body>
+</html>

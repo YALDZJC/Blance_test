@@ -1,0 +1,17 @@
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_linear_init_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_math.h
+blance_demo\svmfunctions.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
+blance_demo\svmfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
+blance_demo\svmfunctions.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
+blance_demo\svmfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+blance_demo\svmfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\math.h
+blance_demo\svmfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\float.h
+blance_demo\svmfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\limits.h
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_linear_predict_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_polynomial_init_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_polynomial_predict_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_rbf_init_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_rbf_predict_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_sigmoid_init_f32.c
+blance_demo\svmfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\SVMFunctions\arm_svm_sigmoid_predict_f32.c
