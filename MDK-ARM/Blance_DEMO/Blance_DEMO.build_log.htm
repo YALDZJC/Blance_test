@@ -88,7 +88,7 @@ compiling Total_stack.cpp...
         this->angle[3] = atan2(tempvx[3] , tempvy[3]) * 180 / 3.14 * 8191 / 360;
 ../RM_File/RM_Wheel.h(38): warning:  #177-D: variable "angle"  was declared but never referenced
         float angle = 45 * 3.14 / 180; 
-../RM_File/DM.h(241): warning:  #1-D: last line of file ends without a newline
+../RM_File/DM.h(255): warning:  #1-D: last line of file ends without a newline
   }
 ../RM_File/RM_CHxxxGy.h(45): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   		this->gy.ASx = (float)((int16_t)((RxHeaderData[1] << 8) | RxHeaderData[0])) * 0.01;
@@ -110,17 +110,17 @@ compiling Total_stack.cpp...
   	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
 ../RM_File/VMC.h(169): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//得到状态变量1
-Total_stack.cpp(229): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(220): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
-Total_stack.cpp(230): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(221): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
-Total_stack.cpp(235): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(226): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_R.VMC_data.phi1=pi/2.0f + R_joint_2.DM_Data.position;
-Total_stack.cpp(236): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(227): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_R.VMC_data.phi4=pi/2.0f + R_joint_3.DM_Data.position;
 Total_stack.cpp: 45 warnings, 0 errors
 linking...
-Program Size: Code=44292 RO-data=6120 RW-data=776 ZI-data=43424  
+Program Size: Code=44000 RO-data=6116 RW-data=776 ZI-data=43424  
 FromELF: creating hex file...
 "Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 45 Warning(s).
 
@@ -150,17 +150,17 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.4.0
 
    * Component: ARM::CMSIS:DSP:Source:1.8.0
-      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
-      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
-      Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
-      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
-      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
-      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
       Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
+      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
+      Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
+      Include file:  CMSIS\DSP\Include\arm_math.h
+      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
       Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
       Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
-      Include file:  CMSIS\DSP\Include\arm_math.h
-      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
+      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
+      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
       Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
       Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
       Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c

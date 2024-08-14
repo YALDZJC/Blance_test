@@ -2,7 +2,9 @@
 
 #include "RM_StaticTime.h"//静态定时器
 #include <stdint.h>
-#include "RM_CAN.h"
+#include "fdcan.h"
+#include "RM_stm32fxxx_hal.h"
+#include "RM_Can.h"
 
 //根据上位机调节
 #define L_LEG_CAN_ID 8
@@ -104,19 +106,19 @@ public:
   //解析
 	void parse(FDCAN_RxHeaderTypeDef RxHeader, const uint8_t* RxData);
   //设置电机数据，力矩控制a
-  void ctrl_motor(float _pos, float _vel,float _KP, float _KD, float _torq);
-  //位置速度
-  void ctrl_motor2(float _pos, float _vel);
+	void ctrl_motor(FDCAN_HandleTypeDef* hcan, float _pos, float _vel,float _KP, float _KD, float _torq); 
+	//位置速度
+  void ctrl_motor2(FDCAN_HandleTypeDef* hcan, float _pos, float _vel);
   //速度
-  void ctrl_motor3(float _vel);
+  void ctrl_motor3(FDCAN_HandleTypeDef* hcan, float _vel);
   //位置限幅
   float Pitch_angle_Limit(float IN,float max,float min);
   //开电机
-  void on();
+  void on(FDCAN_HandleTypeDef* hcan);
   //关电机
-  void off();
+  void off(FDCAN_HandleTypeDef* hcan);
   //清除电机错误
-  void clear_err();
+  void clear_err(FDCAN_HandleTypeDef* hcan);
 	//断链
 	bool is_dir(int time);
 };
@@ -125,10 +127,10 @@ DM::DM(/* args */)
 {
 }
 
-void DM::init()
-{
-  this->on();  
-}
+//void DM::init()
+//{
+//  this->on();  
+//}
 
 void DM::parse(FDCAN_RxHeaderTypeDef RxHeader, const uint8_t* RxData)
 {
@@ -166,7 +168,7 @@ void DM::parse(FDCAN_RxHeaderTypeDef RxHeader, const uint8_t* RxData)
 	}
 }
 
-void DM::ctrl_motor(float _pos, float _vel,float _KP, float _KD, float _torq)
+void DM::ctrl_motor(FDCAN_HandleTypeDef* hcan, float _pos, float _vel,float _KP, float _KD, float _torq)
 {
   uint16_t pos_tmp,vel_tmp,kp_tmp,kd_tmp,tor_tmp;
   pos_tmp = float_to_uint(_pos, P_MIN, P_MAX, 16);
@@ -183,9 +185,11 @@ void DM::ctrl_motor(float _pos, float _vel,float _KP, float _KD, float _torq)
   this->send_data[5] = (kd_tmp >> 4);
   this->send_data[6] = ((kd_tmp&0xF)<<4)|(tor_tmp>>8);
   this->send_data[7] = tor_tmp;  
+	
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
 }
 
-void DM::ctrl_motor2(float _pos, float _vel)
+void DM::ctrl_motor2(FDCAN_HandleTypeDef* hcan, float _pos, float _vel)
 {
   uint8_t *pbuf,*vbuf;
   pbuf = (uint8_t*)&_pos;
@@ -198,9 +202,11 @@ void DM::ctrl_motor2(float _pos, float _vel)
   this->send_data[5] = *(vbuf+1);
   this->send_data[6] = *(vbuf+2);
   this->send_data[7] = *(vbuf+3);
+	
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
 }
 
-void DM::ctrl_motor3(float _vel)
+void DM::ctrl_motor3(FDCAN_HandleTypeDef* hcan, float _vel)
 {
   uint8_t *vbuf;
   vbuf = (uint8_t*)&_vel;
@@ -208,6 +214,8 @@ void DM::ctrl_motor3(float _vel)
   this->send_data[1] = *(vbuf+1);
   this->send_data[2] = *(vbuf+2);
   this->send_data[3] = *(vbuf+3);
+	
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
 }
 
 float DM::Pitch_angle_Limit(float IN,float max,float min)
@@ -219,19 +227,25 @@ float DM::Pitch_angle_Limit(float IN,float max,float min)
 	return OUT;
 }
 
-inline void DM::on()
+inline void DM::on(FDCAN_HandleTypeDef* hcan)
 {
   *(uint64_t*)(&this->send_data[0]) = 0xFCFFFFFFFFFFFFFF;
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
+
 }
 
-inline void DM::off()
+inline void DM::off(FDCAN_HandleTypeDef* hcan)
 {
   *(uint64_t*)(&this->send_data[0]) = 0xFDFFFFFFFFFFFFFF;
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
+
 }
 
-inline void DM::clear_err()
+inline void DM::clear_err(FDCAN_HandleTypeDef* hcan)
 {
   *(uint64_t*)(&this->send_data[0]) = 0xFBFFFFFFFFFFFFFF;
+	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
+
 }
 
 inline bool DM::is_dir(int time)

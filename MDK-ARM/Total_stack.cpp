@@ -91,9 +91,6 @@ void Total_tasks_Init()
 				
 	pm01.PM01Init();
 	
-	L_joint_0.off();//大喵电机初始化	
-	L_joint_1.off();
-	
 	HAL_Delay(10);
 	
 	//记录上一次时间
@@ -178,22 +175,19 @@ void ChassisL_Init()
 {
 	for(int j=0;j<10;j++)
 	{
-		L_joint_0.on();
-		RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+		L_joint_0.on(&hfdcan2);
 
 	  osDelay(1);
 	}
 	for(int j=0;j<10;j++)
 	{
-		L_joint_1.on();
-		RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_1.send_data);//发送
+		L_joint_1.on(&hfdcan2);
 
 	  osDelay(1);
 	}
 	for(int j=0;j<10;j++)
 	{
-		L_Wheel.on();
-		RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+		L_Wheel.on(&hfdcan2);
 
 	  osDelay(1);
 	}
@@ -203,22 +197,19 @@ void ChassisR_Init()
 {
 	for(int j=0;j<10;j++)
 	{
-		R_joint_2.on();
-		RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+		R_joint_2.on(&hfdcan1);
 
 	  osDelay(1);
 	}
 	for(int j=0;j<10;j++)
 	{
-		R_joint_3.on();
-		RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+		R_joint_3.on(&hfdcan1);
 
 	  osDelay(1);
 	}
 	for(int j=0;j<10;j++)
 	{
-		R_Wheel.on();
-		RM_FDorCAN_Send(&hfdcan1, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+		R_Wheel.on(&hfdcan1);
 
 	  osDelay(1);
 	}
@@ -280,31 +271,25 @@ void Chassis_Task_L()
 		if(is == 0)
 		{
 			//打开电机			
-			L_joint_0.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 
-			L_joint_1.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 
-			L_Wheel.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 		else
 		{
 			//打开电机			
-			L_joint_0.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
 			osDelay(Up_Chassis_Time);
 
-			L_joint_1.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
-			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_0.send_data);//发送
+			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			L_Wheel.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送
+			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 	}
@@ -354,31 +339,25 @@ void Chassis_Task_R()
 		if(is == 0)
 		{
 			//打开电机			
-			R_joint_2.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 
-			R_joint_3.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 
-			R_Wheel.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan1, R_Wheel.DM_Data.Send_ID, R_Wheel.send_data);//发送
+			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 		else
 		{
 			//打开电机			
-			R_joint_2.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-			RM_FDorCAN_Send(&hfdcan1, R_joint_2.DM_Data.Send_ID, R_joint_2.send_data);//发送
+			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
 			osDelay(Up_Chassis_Time);
 
-			R_joint_3.ctrl_motor(0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
-			RM_FDorCAN_Send(&hfdcan1, R_joint_3.DM_Data.Send_ID, R_joint_3.send_data);//发送
+			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			R_Wheel.ctrl_motor(0, 0, 0, 0, 0);
-			RM_FDorCAN_Send(&hfdcan1, R_Wheel.DM_Data.Send_ID, R_Wheel.send_data);//发送
+			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 	}
