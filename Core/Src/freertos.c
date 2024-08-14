@@ -227,8 +227,8 @@ void OBSERVE_Task(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
-  }
+		Kalman_task();  
+	}
   /* USER CODE END OBSERVE_Task */
 }
 
