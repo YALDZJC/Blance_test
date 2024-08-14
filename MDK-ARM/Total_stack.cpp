@@ -171,6 +171,19 @@ void Get_Gimbal_to_Chassis(UART_HandleTypeDef* huart)
 	}
 }
 
+void Limit(float *in,float min,float max)
+{
+  if(*in < min)
+  {
+    *in = min;
+  }
+  else if(*in > max)
+  {
+    *in = max;
+  }
+}
+
+/*********************电机初始化*********************/
 void ChassisL_Init()
 {
 	for(int j=0;j<10;j++)
@@ -215,17 +228,34 @@ void ChassisR_Init()
 	}
 }
 
+/*********************反馈值更新*********************/
 void ChassisL_feedback_update()
 {
 	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
 	VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
+	
+	chassis_L.PithL=0 - INS.Pitch;
+	chassis_L.PithGyroL=0 - INS.Gyro[0];
+	
+	chassis_L.v_filter=(L_Wheel.DM_Data.velocity-R_Wheel.DM_Data.velocity)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
+	chassis_L.x_filter += chassis_L.v_filter*((float)3/1000.0f);
 }
 
 void ChassisR_feedback_update()
 {
 	VMC_leg_R.VMC_data.phi1=pi/2.0f + R_joint_2.DM_Data.position;
 	VMC_leg_R.VMC_data.phi4=pi/2.0f + R_joint_3.DM_Data.position;
+	
+	chassis_R.PithR = INS.Pitch;
+	chassis_R.PithGyroR = INS.Gyro[0];
+	
+	chassis_R.v_filter=(L_Wheel.DM_Data.velocity-R_Wheel.DM_Data.velocity)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
+	chassis_R.x_filter = chassis_R.v_filter*((float)3/1000.0f);
 }
+
+/*********************左腿任务*********************/
+float L_theta,R_theta;
+float L_theta_d, R_theta_d, speed;
 
 void Chassis_Task_L()
 {
@@ -245,30 +275,54 @@ void Chassis_Task_L()
 			
 		ChassisL_feedback_update();
 
-		VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], 0.001);
-		
+		VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], 3.0f/1000.0f);
+
 		for(int i=0;i<12;i++)
 		{
 			LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);	
 		}
 		
+		chassis_L.wheel_T =(LQR_K[0]*(VMC_leg_L.VMC_data.theta-0.0f)
+												 +LQR_K[1]*(VMC_leg_L.VMC_data.d_theta-0.0f)
+												 +LQR_K[2]*(chassis_L.x_filter-chassis_L.x_tar)
+												 +LQR_K[3]*(chassis_L.v_filter-chassis_L.v_tar)
+												 +LQR_K[4]*(chassis_L.PithL-0.0f)
+												 +LQR_K[5]*(chassis_L.PithGyroL-0.0f));
+		
 	//右边髋关节输出力矩				
 		VMC_leg_L.VMC_data.Tp=(LQR_K[6]*(VMC_leg_L.VMC_data.theta-0.0f)
 													+LQR_K[7]*(VMC_leg_L.VMC_data.d_theta-0.0f)
-													+LQR_K[10]*(INS.Pitch-0.0f)
-													+LQR_K[11]*(INS.Gyro[0]-0.0f));
+													+LQR_K[10]*(chassis_L.PithL-0.0f)
+													+LQR_K[11]*(chassis_L.PithGyroL-0.0f));
 		
-		P_out = Kp*(tar_L0/100 - VMC_leg_L.VMC_data.L0);
-		D_out = Kd*(0 - VMC_leg_L.VMC_data.d_L0);
-		
-//		LEG_F0_PID.GetPidPos(LEG_F0_Init, tar_L0/100, VMC_leg_L.VMC_data.L0, 3);
-		
-		VMC_leg_L.VMC_data.F0 = FF + P_out + D_out;
+		Limit(&chassis_L.wheel_T ,-1, 1);
+
+//		P_out = Kp*(tar_L0/100 - VMC_leg_L.VMC_data.L0);
+//		D_out = Kd*(0 - VMC_leg_L.VMC_data.d_L0);
+//		
+////		LEG_F0_PID.GetPidPos(LEG_F0_Init, tar_L0/100, VMC_leg_L.VMC_data.L0, 3);
+//		
+//		VMC_leg_L.VMC_data.F0 = FF + P_out + D_out;
 		
 		VMC_leg_L.Jacobian();
 		
+		L_theta = VMC_leg_L.VMC_data.theta;
+		L_theta_d = VMC_leg_L.VMC_data.d_theta;
+
 		//遥控器
-		if(is == 0)
+		if(Emergency_Stop == false)
+		{
+			//打开电机			
+			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
+			osDelay(Up_Chassis_Time);
+
+			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
+			osDelay(Up_Chassis_Time);
+
+			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, chassis_L.wheel_T);
+			osDelay(Up_Chassis_Time);
+		}
+		else if(Emergency_Stop == true)
 		{
 			//打开电机			
 			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
@@ -280,21 +334,10 @@ void Chassis_Task_L()
 			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
-		else
-		{
-			//打开电机			
-			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-			osDelay(Up_Chassis_Time);
-
-			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
-			osDelay(Up_Chassis_Time);
-
-			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
-			osDelay(Up_Chassis_Time);
-		}
 	}
 }
 
+/*********************右腿任务*********************/
 void Chassis_Task_R()
 {
   while(INS.ins_flag==0)
@@ -313,30 +356,55 @@ void Chassis_Task_R()
 			
 		ChassisR_feedback_update();
 
-		VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], 0.001);
+		VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], 3.0f/1000.0f);
 		
 		for(int i=0;i<12;i++)
 		{
-			LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);	
+			LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_R.VMC_data.L0);	
 		}
 		
+		chassis_R.wheel_T =(LQR_K[0]*(VMC_leg_R.VMC_data.theta-0.0f)
+												 +LQR_K[1]*(VMC_leg_R.VMC_data.d_theta-0.0f)
+												 +LQR_K[2]*(chassis_R.x_filter-chassis_R.x_tar)
+												 +LQR_K[3]*(chassis_R.v_filter-chassis_R.v_tar)
+												 +LQR_K[4]*(chassis_R.PithR-0.0f)
+												 +LQR_K[5]*(chassis_R.PithGyroR-0.0f));
+		
 	//右边髋关节输出力矩				
-		VMC_leg_L.VMC_data.Tp=(LQR_K[6]*(VMC_leg_L.VMC_data.theta-0.0f)
-													+LQR_K[7]*(VMC_leg_L.VMC_data.d_theta-0.0f)
-													+LQR_K[10]*(INS.Pitch-0.0f)
-													+LQR_K[11]*(INS.Gyro[0]-0.0f));
+		VMC_leg_R.VMC_data.Tp=(LQR_K[6]*(VMC_leg_R.VMC_data.theta-0.0f)
+													+LQR_K[7]*(VMC_leg_R.VMC_data.d_theta-0.0f)
+													+LQR_K[10]*(chassis_R.PithR-0.0f)
+													+LQR_K[11]*(chassis_R.PithGyroR-0.0f));
 		
-		P_out = Kp*(tar_L0/100 - VMC_leg_L.VMC_data.L0);
-		D_out = Kd*(0 - VMC_leg_L.VMC_data.d_L0);
+		Limit(&chassis_R.wheel_T ,-1, 1);
+		d_theta_R.td_quadratic(VMC_leg_R.VMC_data.d_theta);
+
+//		P_out = Kp*(tar_L0/100 - VMC_leg_L.VMC_data.L0);
+//		D_out = Kd*(0 - VMC_leg_L.VMC_data.d_L0);
+//		
+////		LEG_F0_PID.GetPidPos(LEG_F0_Init, tar_L0/100, VMC_leg_L.VMC_data.L0, 3);
+//		
+//		VMC_leg_L.VMC_data.F0 = FF + P_out + D_out;
 		
-//		LEG_F0_PID.GetPidPos(LEG_F0_Init, tar_L0/100, VMC_leg_L.VMC_data.L0, 3);
+		R_theta = VMC_leg_R.VMC_data.theta;
+		R_theta_d = VMC_leg_R.VMC_data.d_theta;
 		
-		VMC_leg_L.VMC_data.F0 = FF + P_out + D_out;
-		
-		VMC_leg_L.Jacobian();
+		VMC_leg_R.Jacobian();
 		
 		//遥控器
-		if(is == 0)
+		if(Emergency_Stop == false)
+		{
+			//打开电机
+			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
+			osDelay(Up_Chassis_Time);
+
+			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
+			osDelay(Up_Chassis_Time);
+
+			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, chassis_R.wheel_T);
+			osDelay(Up_Chassis_Time);
+		}
+		else if(Emergency_Stop == true)
 		{
 			//打开电机			
 			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
@@ -348,41 +416,25 @@ void Chassis_Task_R()
 			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
-		else
-		{
-			//打开电机			
-			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
-			osDelay(Up_Chassis_Time);
-
-			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
-			osDelay(Up_Chassis_Time);
-
-			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
-			osDelay(Up_Chassis_Time);
-		}
 	}
 }
 
 void DM_Send_Task()
 {
-	//发送数据
-//	if(INS.ins_flag == 1)
-//	{
-//		if(send_motor_ms == 0)
-//		{
-//			RM_FDorCAN_Send(&hfdcan2, L_joint_0.DM_Data.Send_ID, L_joint_0.send_data);//发送
-//		}
-//		if(send_motor_ms == 1)
-//		{
-//			RM_FDorCAN_Send(&hfdcan2, L_joint_1.DM_Data.Send_ID, L_joint_1.send_data);//发送
-//		}
-//		if(send_motor_ms == 2)
-//		{
-//			RM_FDorCAN_Send(&hfdcan2, L_Wheel.DM_Data.Send_ID, L_Wheel.send_data);//发送	}
-//		}
-//		send_motor_ms++;
-//		send_motor_ms %= 3;
-//	}
+	 dir = RM_Clicker::ISDir();
+	
+		*((float*)&send_str2[0]) = chassis_R.wheel_T;
+		*((float*)&send_str2[4]) = chassis_L.wheel_T;
+
+//		*((float*)&send_str2[8]) = VMC_leg_R.VMC_data.d_theta;
+//		*((float*)&send_str2[12]) = d_theta_R.x1;
+//		*((float*)&send_str2[16]) = chassis_R.v_filter;
+//		*((float*)&send_str2[20]) = chassis_R.PithR;
+//		*((float*)&send_str2[24]) = chassis_R.PithGyroR;
+//		*((float*)&send_str2[28]) = 0;
+
+		*((uint32_t*)&send_str2[sizeof(float) * (7)]) = 0x7f800000;
+		HAL_UART_Transmit_DMA(&Send_Usart_Data_Huart, send_str2, sizeof(float) * (7 + 1));
 }
 
 void Send_Vofa_Task()
@@ -393,8 +445,77 @@ void Send_Vofa_Task()
 //		*((float*)&send_str2[8]) = L_joint_0.DM_Data.position;
 //		*((float*)&send_str2[12]) = L_joint_1.DM_Data.position;
 //		*((float*)&send_str2[16]) = VMC_leg_L.VMC_data.phi4;
-//		*((float*)&send_str2[20]) = VMC_leg_L.VMC_data.phi1;
-		*((uint32_t*)&send_str2[sizeof(float) * (7)]) = 0x7f800000;
-		HAL_UART_Transmit_DMA(&Send_Usart_Data_Huart, send_str2, sizeof(float) * (7 + 1));
+////		*((float*)&send_str2[20]) = VMC_leg_L.VMC_data.phi1;
+//		*((uint32_t*)&send_str2[sizeof(float) * (7)]) = 0x7f800000;
+//		HAL_UART_Transmit_DMA(&Send_Usart_Data_Huart, send_str2, sizeof(float) * (7 + 1));
 }
+
+
+
+float vel_acc[2]; 
+uint32_t OBSERVE_TIME=3;//任务周期是3ms				
+
+void xvEstimateKF_Init(KalmanFilter_t *EstimateKF)
+{
+    Kalman_Filter_Init(EstimateKF, 2, 0, 2);	// 状态向量2维 没有控制量 测量向量2维
+	
+		memcpy(EstimateKF->F_data, vaEstimateKF_F, sizeof(vaEstimateKF_F));
+    memcpy(EstimateKF->P_data, vaEstimateKF_P, sizeof(vaEstimateKF_P));
+    memcpy(EstimateKF->Q_data, vaEstimateKF_Q, sizeof(vaEstimateKF_Q));
+    memcpy(EstimateKF->R_data, vaEstimateKF_R, sizeof(vaEstimateKF_R));
+    memcpy(EstimateKF->H_data, vaEstimateKF_H, sizeof(vaEstimateKF_H));
+
+}
+
+void xvEstimateKF_Update(KalmanFilter_t *EstimateKF ,float acc,float vel)
+{   	
+    //卡尔曼滤波器测量值更新
+    EstimateKF->MeasuredVector[0] =	vel;//测量速度
+    EstimateKF->MeasuredVector[1] = acc;//测量加速度
+    		
+    //卡尔曼滤波器更新函数
+    Kalman_Filter_Update(EstimateKF);
+
+    // 提取估计值
+    for (uint8_t i = 0; i < 2; i++)
+    {
+      vel_acc[i] = EstimateKF->FilteredValue[i];
+    }
+}
+
+void 	Observe_task(void)
+{
+	while(INS.ins_flag==0)
+	{//等待加速度收敛
+	  osDelay(1);	
+	}
+	static float wr,wl=0.0f;
+	static float vrb,vlb=0.0f;
+	static float aver_v=0.0f;
+		
+	xvEstimateKF_Init(&vaEstimateKF);
+	
+  while(1)
+	{  
+		wr= -R_Wheel.DM_Data.velocity - INS.Gyro[0]+VMC_leg_R.VMC_data.d_alpha;//右边驱动轮转子相对大地角速度，这里定义的是顺时针为正
+		vrb=wr*0.0603f + VMC_leg_R.VMC_data.L0 * VMC_leg_R.VMC_data.d_theta * arm_cos_f32(VMC_leg_R.VMC_data.theta)+VMC_leg_R.VMC_data.d_L0*arm_sin_f32(VMC_leg_R.VMC_data.theta);//机体b系的速度
+		
+		wl= -L_Wheel.DM_Data.velocity+INS.Gyro[0]+VMC_leg_L.VMC_data.d_alpha;//左边驱动轮转子相对大地角速度，这里定义的是顺时针为正
+		vlb=wl*0.0603f+VMC_leg_L.VMC_data.L0*VMC_leg_L.VMC_data.d_theta*arm_cos_f32(VMC_leg_L.VMC_data.theta)+VMC_leg_L.VMC_data.d_L0*arm_sin_f32(VMC_leg_L.VMC_data.theta);//机体b系的速度
+		
+		aver_v=(vrb-vlb)/2.0f;//取平均
+    xvEstimateKF_Update(&vaEstimateKF,INS.MotionAccel_b[1],aver_v);
+		
+		//原地自转的过程中v_filter和x_filter应该都是为0
+		chassis_L.v_filter=vel_acc[0];//得到卡尔曼滤波后的速度
+		chassis_L.x_filter=chassis_L.x_filter+chassis_L.v_filter*((float)OBSERVE_TIME/1000.0f);
+		
+	//如果想直接用轮子速度，不做融合的话可以这样
+	//chassis_move.v_filter=(chassis_move.wheel_motor[0].para.vel-chassis_move.wheel_motor[1].para.vel)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
+	//chassis_move.x_filter=chassis_move.x_filter+chassis_move.x_filter+chassis_move.v_filter*((float)OBSERVE_TIME/1000.0f);
+		
+		osDelay(OBSERVE_TIME);
+	}
+}
+
 

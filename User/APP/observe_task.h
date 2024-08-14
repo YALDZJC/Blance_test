@@ -4,9 +4,8 @@
 
 #include "stdint.h"
 #include "ins_task.h"
-#include "chassisL_task.h"
+#include "def_variable.h"
 #include "main.h"
-
 
 extern void Observe_task(void);
 extern void xvEstimateKF_Init(KalmanFilter_t *EstimateKF);

@@ -764,6 +764,11 @@
               <FilePath>..\RM_File\RM_Wheel.h</FilePath>
             </File>
             <File>
+              <FileName>VMC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\RM_File\VMC.h</FilePath>
+            </File>
+            <File>
               <FileName>RM_RefereeSystem.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\RM_File\RM_RefereeSystem.cpp</FilePath>
@@ -772,11 +777,6 @@
               <FileName>RM_RefereeSystemCRC.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\RM_File\RM_RefereeSystemCRC.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>VMC.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\RM_File\VMC.h</FilePath>
             </File>
           </Files>
         </Group>

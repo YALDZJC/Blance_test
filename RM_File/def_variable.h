@@ -23,6 +23,7 @@
 #include "RM_Servos.h"
 #include "RM_CHxxxGy.h"
 #include "VMC.h"
+#include "kalman_filter.h"
 
 /*
 														操作控制策划														
@@ -152,12 +153,48 @@ uint8_t Up_Chassis_Time = 1;
 
 uint8_t is = 0;
 //云台PID相关
+typedef struct
+{
+	float wheel_T;
+	
+	float v_tar;//期望速度，单位是m/s
+	float x_tar;//期望位置，单位是m
+	float turn_tar;//期望yaw轴弧度
+	float roll_tar;	//期望roll轴弧度
+	float leg_tar;//期望腿长，单位是m
+	float last_leg_set;
 
+	float v_filter;//滤波后的车体速度，单位是m/s
+	float x_filter;//滤波后的车体位置，单位是m
+	
+	float PithR;
+	float PithGyroR;
+	float PithL;
+	float PithGyroL;
+	
+	float roll;
+	float total_yaw;
+	float theta_err;//两腿夹角误差
+		
+	float turn_T;//yaw轴补偿
+	float roll_f0;//roll轴补偿
+	float leg_tp;//防劈叉补偿
+	
+	uint8_t start_flag;//启动标志
+
+	uint8_t prejump_flag;//预跳跃标志
+	uint8_t recover_flag;//一种情况下的倒地自起标志
+	
+} chassis_t;
+
+chassis_t chassis_L;
+chassis_t chassis_R;
 //PID参数初始化
 
 
-//期望值相关
-
+//滤波相关
+TD_quadratic d_theta_L(150);
+TD_quadratic d_theta_R(150);
 
 //舵机相关
 RM_Servos servos;//仓门舵机 
@@ -194,3 +231,23 @@ float Poly_Coefficient[12][4]={	{-88.3079710751263,	68.9068310796955,	-30.000380
 float LQR_K[12]={ 
    -2.1954,   -0.2044  , -0.8826,   -1.3245,    1.2784  ,  0.1112,
     2.5538,   0.2718  ,  1.5728  ,  2.2893  , 12.1973 ,   0.4578};
+
+KalmanFilter_t vaEstimateKF;	   // 卡尔曼滤波器结构体
+		
+float vaEstimateKF_F[4] = {1.0f, 0.003f, 
+                           0.0f, 1.0f};	   // 状态转移矩阵，控制周期为0.001s
+
+float vaEstimateKF_P[4] = {1.0f, 0.0f,
+                           0.0f, 1.0f};    // 后验估计协方差初始值
+
+float vaEstimateKF_Q[4] = {0.1f, 0.0f, 
+                           0.0f, 0.1f};    // Q矩阵初始值
+
+float vaEstimateKF_R[4] = {100.0f, 0.0f, 
+                            0.0f,  100.0f}; 	
+														
+float vaEstimateKF_K[4];
+													 
+const float vaEstimateKF_H[4] = {1.0f, 0.0f,
+                                 0.0f, 1.0f};	// 设置矩阵H为常量
+		

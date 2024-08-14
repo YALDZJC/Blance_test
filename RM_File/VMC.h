@@ -81,8 +81,8 @@ void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
 {
     static float Pitch_L=0.0f;
 	static float Pith_GyroL=0.0f;
-	Pitch_L = pitch_Angle;
-	Pith_GyroL = pitch_Gyro;
+	Pitch_L = 0.0f - pitch_Angle;
+	Pith_GyroL = 0.0f - pitch_Gyro;
 
 	this->VMC_data.YD = this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi4);//D的y坐标
 	this->VMC_data.YB = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1);//B的y坐标
@@ -172,7 +172,7 @@ void VMC_leg_t::Up_Right(float pitch_Angle, float pitch_Gyro, float dt)
 	this->VMC_data.last_phi0 = this->VMC_data.phi0 ;
     
 	this->VMC_data.d_L0=(this->VMC_data.L0 - this->VMC_data.last_L0)/dt;//腿长L0的一阶导数
-    this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//腿长L0的二阶导数
+  this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//腿长L0的二阶导数
 		
 	this->VMC_data.last_d_L0 = this->VMC_data.d_L0;
 	this->VMC_data.last_L0 = this->VMC_data.L0;
