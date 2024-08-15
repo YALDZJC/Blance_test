@@ -110,31 +110,21 @@ compiling Total_stack.cpp...
   	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
 ../RM_File/VMC.h(169): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//得到状态变量1
-../RM_File/def_variable.h(253): warning:  #1-D: last line of file ends without a newline
+../RM_File/def_variable.h(255): warning:  #1-D: last line of file ends without a newline
   		
 Total_stack.cpp(234): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
 Total_stack.cpp(235): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
-Total_stack.cpp(246): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(250): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_R.VMC_data.phi1=pi/2.0f + R_joint_2.DM_Data.position;
-Total_stack.cpp(247): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+Total_stack.cpp(251): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_R.VMC_data.phi4=pi/2.0f + R_joint_3.DM_Data.position;
-Total_stack.cpp(465): warning:  #177-D: variable "wr"  was declared but never referenced
-  	static float wr,wl=0.0f;
-Total_stack.cpp(465): warning:  #177-D: variable "wl"  was declared but never referenced
-  	static float wr,wl=0.0f;
-Total_stack.cpp(466): warning:  #177-D: variable "vrb"  was declared but never referenced
-  	static float vrb,vlb=0.0f;
-Total_stack.cpp(466): warning:  #177-D: variable "vlb"  was declared but never referenced
-  	static float vrb,vlb=0.0f;
-Total_stack.cpp(467): warning:  #177-D: variable "aver_v"  was declared but never referenced
-  	static float aver_v=0.0f;
-Total_stack.cpp: 51 warnings, 0 errors
+Total_stack.cpp: 46 warnings, 0 errors
 linking...
-Program Size: Code=47948 RO-data=6136 RW-data=832 ZI-data=43968  
+Program Size: Code=51392 RO-data=6132 RW-data=860 ZI-data=44052  
 FromELF: creating hex file...
-"Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 51 Warning(s).
+"Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 46 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -162,21 +152,21 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.4.0
 
    * Component: ARM::CMSIS:DSP:Source:1.8.0
-      Include file:  CMSIS\DSP\Include\arm_math.h
-      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
       Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
-      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
       Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
-      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Include file:  CMSIS\DSP\Include\arm_math.h
       Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
-      Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
       Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
       Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
       Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
-      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
-      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
+      Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
       Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
-Build Time Elapsed:  00:00:05
+      Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
+      Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>

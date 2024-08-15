@@ -155,7 +155,7 @@ uint8_t is = 0;
 //云台PID相关
 typedef struct
 {
-	float wheel_T;
+	float wheel_T[2];
 	
 	float v_tar;//期望速度，单位是m/s
 	float x_tar;//期望位置，单位是m
@@ -172,6 +172,9 @@ typedef struct
 	float PithL;
 	float PithGyroL;
 	
+	float Yaw_L;
+	float Yaw_R;
+	
 	float roll;
 	float total_yaw;
 	float theta_err;//两腿夹角误差
@@ -187,14 +190,13 @@ typedef struct
 	
 } chassis_t;
 
-chassis_t chassis_L;
-chassis_t chassis_R;
+chassis_t chassis;
 //PID参数初始化
-
+RM_PID Turn;
+Kpid_t Turn_pid(0, 0, 0);
 
 //滤波相关
-TD_quadratic d_theta_L(150);
-TD_quadratic d_theta_R(150);
+TD_quadratic V_speed(150);
 
 //舵机相关
 RM_Servos servos;//仓门舵机 
