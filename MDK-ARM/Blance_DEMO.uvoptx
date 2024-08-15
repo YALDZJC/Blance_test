@@ -193,12 +193,12 @@
         <Ww>
           <count>8</count>
           <WinNumber>1</WinNumber>
-          <ItemText>dir</ItemText>
+          <ItemText>RC_Ctl</ItemText>
         </Ww>
         <Ww>
           <count>9</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RC_Ctl</ItemText>
+          <ItemText>((RM_Clicker::RC_Ctl.rc.s1 == 2) &amp;&amp; RM_Clicker::RC_Ctl.rc.s2 == 2)</ItemText>
         </Ww>
         <Ww>
           <count>10</count>
@@ -213,70 +213,65 @@
         <Ww>
           <count>12</count>
           <WinNumber>1</WinNumber>
-          <ItemText>((RM_Clicker::RC_Ctl.rc.s1 == 2) &amp;&amp; RM_Clicker::RC_Ctl.rc.s2 == 2)</ItemText>
+          <ItemText>L_theta</ItemText>
         </Ww>
         <Ww>
           <count>13</count>
           <WinNumber>1</WinNumber>
-          <ItemText>L_theta</ItemText>
+          <ItemText>R_theta</ItemText>
         </Ww>
         <Ww>
           <count>14</count>
           <WinNumber>1</WinNumber>
-          <ItemText>R_theta</ItemText>
+          <ItemText>L_theta_d</ItemText>
         </Ww>
         <Ww>
           <count>15</count>
           <WinNumber>1</WinNumber>
-          <ItemText>L_theta_d</ItemText>
+          <ItemText>R_theta_d</ItemText>
         </Ww>
         <Ww>
           <count>16</count>
           <WinNumber>1</WinNumber>
-          <ItemText>R_theta_d</ItemText>
+          <ItemText>speed</ItemText>
         </Ww>
         <Ww>
           <count>17</count>
           <WinNumber>1</WinNumber>
-          <ItemText>speed</ItemText>
+          <ItemText>send_str2</ItemText>
         </Ww>
         <Ww>
           <count>18</count>
           <WinNumber>1</WinNumber>
-          <ItemText>send_str2</ItemText>
+          <ItemText>d_theta_R</ItemText>
         </Ww>
         <Ww>
           <count>19</count>
           <WinNumber>1</WinNumber>
-          <ItemText>d_theta_R</ItemText>
+          <ItemText>vaEstimateKF</ItemText>
         </Ww>
         <Ww>
           <count>20</count>
           <WinNumber>1</WinNumber>
-          <ItemText>vaEstimateKF</ItemText>
+          <ItemText>wl</ItemText>
         </Ww>
         <Ww>
           <count>21</count>
           <WinNumber>1</WinNumber>
-          <ItemText>wl</ItemText>
+          <ItemText>Turn</ItemText>
         </Ww>
         <Ww>
           <count>22</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Turn</ItemText>
+          <ItemText>Turn_pid</ItemText>
         </Ww>
         <Ww>
           <count>23</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Turn_pid</ItemText>
-        </Ww>
-        <Ww>
-          <count>24</count>
-          <WinNumber>1</WinNumber>
           <ItemText>chassis</ItemText>
         </Ww>
         <Ww>
-          <count>25</count>
+          <count>24</count>
           <WinNumber>1</WinNumber>
           <ItemText>wl</ItemText>
         </Ww>

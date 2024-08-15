@@ -138,7 +138,6 @@ uint8_t send_GIMBAL_motor_size;//用于3508与6020错开发送
 uint32_t send_DM_motor_ms;
 
 //达妙电机
-
 DM L_joint_0(6, 3, 0);
 DM L_joint_1(8, 4, 0);
 DM L_Wheel(1, 0, 1);
@@ -194,6 +193,12 @@ chassis_t chassis;
 //PID参数初始化
 RM_PID Turn;
 Kpid_t Turn_pid(0, 0, 0);
+
+RM_PID L0_L;
+Kpid_t L0_L_pid(0, 0, 0);
+
+RM_PID L0_R;
+Kpid_t L0_R_pid(0, 0, 0);
 
 //滤波相关
 TD_quadratic V_speed(150);

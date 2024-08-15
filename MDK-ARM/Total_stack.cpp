@@ -234,8 +234,8 @@ void ChassisL_feedback_update()
 	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
 	VMC_leg_L.VMC_data.phi4=pi/2.0f + L_joint_1.DM_Data.position;
 	
-	chassis.PithL=0 - INS.Pitch;
-	chassis.PithGyroL=0 - INS.Gyro[0];
+	chassis.PithL= 0 - INS.Pitch;
+	chassis.PithGyroL= 0 - INS.Gyro[0];
 	
 	chassis.Yaw_L = INS.YawTotalAngle;
 	
@@ -267,9 +267,9 @@ void chassisL_control_loop()
 	}
 	
 	chassis.wheel_T[1] =(LQR_K[0]*(VMC_leg_L.VMC_data.theta-0.0f)
-											 +LQR_K[1]*(VMC_leg_L.VMC_data.theta-0.0f)
-											 +LQR_K[2]*(chassis.x_filter-chassis.x_tar)
-											 +LQR_K[3]*(chassis.v_filter-chassis.v_tar)
+											 +LQR_K[1]*(VMC_leg_L.VMC_data.d_theta-0.0f)
+											 +LQR_K[2]*(chassis.x_tar-chassis.x_filter)
+											 +LQR_K[3]*(chassis.v_tar-chassis.v_filter)
 											 +LQR_K[4]*(chassis.PithL-0.0f)
 											 +LQR_K[5]*(chassis.PithGyroL-0.0f));
 	
@@ -280,9 +280,11 @@ void chassisL_control_loop()
 												+LQR_K[11]*(chassis.PithGyroL-0.0f));
 	
 	Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 1);
-	chassis.wheel_T[1] = chassis.wheel_T[1] - Turn.pid.cout;
+	chassis.wheel_T[1] = chassis.wheel_T[1];
 	
 	Limit(&chassis.wheel_T[1] ,-1, 1);
+	
+	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar, VMC_leg_L.VMC_data.L0, 10);
 	
 	VMC_leg_L.Jacobian();
 }
@@ -298,8 +300,8 @@ void chassisR_control_loop()
 		
 		chassis.wheel_T[0] =(LQR_K[0]*(VMC_leg_R.VMC_data.theta-0.0f)
 												 +LQR_K[1]*(VMC_leg_R.VMC_data.d_theta-0.0f)
-												 +LQR_K[2]*(-chassis.x_filter-chassis.x_tar)
-												 +LQR_K[3]*(-chassis.v_filter-chassis.v_tar)
+												 +LQR_K[2]*(chassis.x_filter-chassis.x_tar)
+												 +LQR_K[3]*(chassis.v_filter-chassis.v_tar)
 												 +LQR_K[4]*(chassis.PithR-0.0f)
 												 +LQR_K[5]*(chassis.PithGyroR-0.0f));
 		
@@ -309,11 +311,11 @@ void chassisR_control_loop()
 													+LQR_K[10]*(chassis.PithR-0.0f)
 													+LQR_K[11]*(chassis.PithGyroR-0.0f));
 		
-		chassis.wheel_T[0] = chassis.wheel_T[0] - Turn.pid.cout;
+		chassis.wheel_T[0] = chassis.wheel_T[0];
 		
 		Limit(&chassis.wheel_T[0] ,-1, 1);
 		
-		diffR = LQR_K[3]*(V_speed.x1-chassis.v_tar);
+		L0_R.GetPidPos(L0_R_pid, chassis.leg_tar, VMC_leg_R.VMC_data.L0, 10);
 
 		VMC_leg_R.Jacobian();
 }
@@ -336,13 +338,13 @@ void Chassis_Task_L()
 		if(Emergency_Stop == false)
 		{
 			//打开电机			
-			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
+			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
 			osDelay(Up_Chassis_Time);
 
-			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
+			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, chassis.wheel_T[1]);
+			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 			
 		}
@@ -358,8 +360,8 @@ void Chassis_Task_L()
 			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 			
-			chassis.turn_tar = chassis.total_yaw;
-			chassis.x_tar=chassis.x_filter;
+//			chassis.turn_tar = chassis.total_yaw;
+//			chassis.x_tar=chassis.x_filter;
 		}
 	}
 }
@@ -382,13 +384,13 @@ void Chassis_Task_R()
 		if(Emergency_Stop == false)
 		{
 			//打开电机
-			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
+			R_joint_2.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_R.VMC_data.torque_set[0]);
 			osDelay(Up_Chassis_Time);
 
-			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
+			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_R.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, chassis.wheel_T[0]);
+			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 		else if(Emergency_Stop == true)
@@ -413,10 +415,10 @@ void DM_Send_Task()
 		*((float*)&send_str2[0]) = chassis.wheel_T[0];
 		*((float*)&send_str2[4]) = chassis.wheel_T[1];
 
-		*((float*)&send_str2[8]) = chassis.v_filter;
-		*((float*)&send_str2[12]) = chassis.x_filter;
-		*((float*)&send_str2[16]) = V_speed.x1;
-		*((float*)&send_str2[20]) = diffL;
+//		*((float*)&send_str2[8]) = VMC_leg_L.VMC_data.theta;
+//		*((float*)&send_str2[12]) = VMC_leg_L.VMC_data.d_theta;
+//		*((float*)&send_str2[16]) = chassis.PithGyroR;
+//		*((float*)&send_str2[20]) = chassis.PithGyroL;
 //		*((float*)&send_str2[24]) = chassis_R.PithGyroR;
 //		*((float*)&send_str2[28]) = 0;
 
@@ -487,7 +489,7 @@ void Kalman_task(void)
 		wr= -R_Wheel.DM_Data.velocity - INS.Gyro[0]+VMC_leg_R.VMC_data.d_alpha;//右边驱动轮转子相对大地角速度，这里定义的是顺时针为正
 		vrb=wr*0.0603f + VMC_leg_R.VMC_data.L0 * VMC_leg_R.VMC_data.d_theta * arm_cos_f32(VMC_leg_R.VMC_data.theta)+VMC_leg_R.VMC_data.d_L0*arm_sin_f32(VMC_leg_R.VMC_data.theta);//机体b系的速度
 		
-		wl= -L_Wheel.DM_Data.velocity+INS.Gyro[0]+VMC_leg_L.VMC_data.d_alpha;//左边驱动轮转子相对大地角速度，这里定义的是顺时针为正
+		wl= -L_Wheel.DM_Data.velocity + INS.Gyro[0]+VMC_leg_L.VMC_data.d_alpha;//左边驱动轮转子相对大地角速度，这里定义的是顺时针为正
 		vlb=wl*0.0603f+VMC_leg_L.VMC_data.L0*VMC_leg_L.VMC_data.d_theta*arm_cos_f32(VMC_leg_L.VMC_data.theta)+VMC_leg_L.VMC_data.d_L0*arm_sin_f32(VMC_leg_L.VMC_data.theta);//机体b系的速度
 		
 		aver_v=(vrb-vlb)/2.0f;//取平均
