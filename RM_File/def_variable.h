@@ -192,14 +192,16 @@ typedef struct
 chassis_t chassis;
 //PID参数初始化
 RM_PID Turn;
-Kpid_t Turn_pid(0, 0, 0);
+Kpid_t Turn_pid(1.5, 0, 0.1);
 
 RM_PID L0_L;
-Kpid_t L0_L_pid(0, 0, 0);
+Kpid_t L0_L_pid(320, 0, 10);
 
 RM_PID L0_R;
 Kpid_t L0_R_pid(0, 0, 0);
 
+RM_PID theta_err;
+Kpid_t K_theta_err(5, 0, 0.1);
 //滤波相关
 TD_quadratic V_speed(150);
 
@@ -219,8 +221,10 @@ int16_t dianlupid;
 VMC_leg_t VMC_leg_L( L1, L2, L3, L4, L5 );
 VMC_leg_t VMC_leg_R( L1, L2, L3, L4, L5 );
 
-float tar_L0, FF;
-float Kp = -200,Kd = -40,P_out,D_out;
+float Turn_out, Kp, Kd;
+
+float tar_L0, FF = 13, rc_dc = 0.0002, go_dc = 0.001,turn_dc = -0.0001;
+//float Kp = -200,Kd = -40,P_out,D_out;
 float tar_dc = 0.0001;
 float Poly_Coefficient[12][4]={	{-88.3079710751263,	68.9068310796955,	-30.0003802287502,	-0.197774178106864},
 																{1.52414598059982	,-1.09343038036609,	-2.82688593867512,	0.0281973842051861},

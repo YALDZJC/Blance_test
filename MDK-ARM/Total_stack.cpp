@@ -238,7 +238,7 @@ void ChassisL_feedback_update()
 	chassis.PithGyroL= 0 - INS.Gyro[0];
 	
 	chassis.Yaw_L = INS.YawTotalAngle;
-	
+	chassis.theta_err = 0.0f - (VMC_leg_R.VMC_data.theta + VMC_leg_L.VMC_data.theta);
 //	chassis.v_filter=(L_Wheel.DM_Data.velocity-R_Wheel.DM_Data.velocity)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
 //	chassis.x_filter += chassis.v_filter*((float)3/1000.0f);
 
@@ -253,6 +253,10 @@ void ChassisR_feedback_update()
 	chassis.PithR = INS.Pitch;
 	chassis.PithGyroR = INS.Gyro[0];
 	
+	chassis.leg_tar += RC_RY*rc_dc;
+	chassis.v_tar = RC_LY*go_dc;
+	chassis.x_tar += chassis.v_tar*0.003;
+	chassis.turn_tar += RC_LX*turn_dc;
 }
 
 float diffL, diffR;
@@ -276,15 +280,24 @@ void chassisL_control_loop()
 //右边髋关节输出力矩				
 	VMC_leg_L.VMC_data.Tp=(LQR_K[6]*(VMC_leg_L.VMC_data.theta-0.0f)
 												+LQR_K[7]*(VMC_leg_L.VMC_data.d_theta-0.0f)
+												+LQR_K[8]*(chassis.x_tar-chassis.x_filter)
+												+LQR_K[9]*(chassis.v_tar-chassis.v_filter)
 												+LQR_K[10]*(chassis.PithL-0.0f)
 												+LQR_K[11]*(chassis.PithGyroL-0.0f));
 	
-	Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 1);
-	chassis.wheel_T[1] = chassis.wheel_T[1];
+//	Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 2);
+	Turn_out = Kp * (chassis.turn_tar - chassis.Yaw_L) + Kd * (0 - INS.Gyro[2]);
+	chassis.wheel_T[1] = chassis.wheel_T[1] - Turn_out;
 	
 	Limit(&chassis.wheel_T[1] ,-1, 1);
+	Limit(&chassis.leg_tar ,6.5, 18);
+
+	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+	VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout;
 	
-	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar, VMC_leg_L.VMC_data.L0, 10);
+	theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 2);
+	
+	VMC_leg_L.VMC_data.Tp = VMC_leg_L.VMC_data.Tp + theta_err.pid.cout;
 	
 	VMC_leg_L.Jacobian();
 }
@@ -308,15 +321,20 @@ void chassisR_control_loop()
 	//右边髋关节输出力矩				
 		VMC_leg_R.VMC_data.Tp=(LQR_K[6]*(VMC_leg_R.VMC_data.theta-0.0f)
 													+LQR_K[7]*(VMC_leg_R.VMC_data.d_theta-0.0f)
+													+LQR_K[8]*(chassis.x_filter-chassis.x_tar)
+													+LQR_K[9]*(chassis.v_filter-chassis.v_tar)
 													+LQR_K[10]*(chassis.PithR-0.0f)
 													+LQR_K[11]*(chassis.PithGyroR-0.0f));
 		
-		chassis.wheel_T[0] = chassis.wheel_T[0];
+		chassis.wheel_T[0] = chassis.wheel_T[0] - Turn_out;
 		
 		Limit(&chassis.wheel_T[0] ,-1, 1);
-		
-		L0_R.GetPidPos(L0_R_pid, chassis.leg_tar, VMC_leg_R.VMC_data.L0, 10);
 
+		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout;
+		
+		VMC_leg_R.VMC_data.Tp = VMC_leg_R.VMC_data.Tp + theta_err.pid.cout;
+		
 		VMC_leg_R.Jacobian();
 }
 
@@ -344,7 +362,8 @@ void Chassis_Task_L()
 			L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
+			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, chassis.wheel_T[1]);
+//			L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 			
 		}
@@ -390,7 +409,8 @@ void Chassis_Task_R()
 			R_joint_3.ctrl_motor(&hfdcan1,0, 0, 0, 0, VMC_leg_R.VMC_data.torque_set[1]);
 			osDelay(Up_Chassis_Time);
 
-			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
+			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, chassis.wheel_T[0]);
+//			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
 			osDelay(Up_Chassis_Time);
 		}
 		else if(Emergency_Stop == true)
