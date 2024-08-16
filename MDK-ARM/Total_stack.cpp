@@ -257,6 +257,7 @@ void ChassisR_feedback_update()
 	chassis.v_tar = RC_LY*go_dc;
 	chassis.x_tar += chassis.v_tar*0.003;
 	chassis.turn_tar += RC_LX*turn_dc;
+	chassis.roll_tar += RC_RX*turn_dc;
 }
 
 float diffL, diffR;
@@ -292,14 +293,26 @@ void chassisL_control_loop()
 	Limit(&chassis.wheel_T[1] ,-1, 1);
 	Limit(&chassis.leg_tar ,6.5, 18);
 
+	chassis.roll_f0 = roll_Kp*(chassis.roll_tar - INS.Roll) + roll_Kd*(0 - INS.Gyro[1]);
+	
 	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
-	VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout;
+	VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout + chassis.roll_f0;
+	VMC_leg_L.ground_detection_L();
 	
 	theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 2);
 	
 	VMC_leg_L.VMC_data.Tp = VMC_leg_L.VMC_data.Tp + theta_err.pid.cout;
 	
 	VMC_leg_L.Jacobian();
+	
+	if(VMC_leg_L.ground_detection_L())
+	{
+		chassis.wheel_T[1] = 0.0f;
+		chassis.x_filter = 0.0f;
+		
+		chassis.x_tar = chassis.x_filter;
+		chassis.turn_tar = chassis.Yaw_L;
+	}
 }
 
 void chassisR_control_loop()
@@ -330,12 +343,19 @@ void chassisR_control_loop()
 		
 		Limit(&chassis.wheel_T[0] ,-1, 1);
 
+//		roll.GetPidPos(K_roll, chassis.roll, INS.Roll, 10);
+
 		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
-		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout;
+		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
+		VMC_leg_R.ground_detection_R();
 		
 		VMC_leg_R.VMC_data.Tp = VMC_leg_R.VMC_data.Tp + theta_err.pid.cout;
-		
 		VMC_leg_R.Jacobian();
+
+		if(VMC_leg_R.ground_detection_R())
+		{
+			chassis.wheel_T[0] = 0.0f;
+		}
 }
 
 /*********************×óÍÈÈÎÎñ*********************/

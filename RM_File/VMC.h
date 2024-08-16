@@ -72,9 +72,8 @@ public:
 	void Up_Right(float pitch_Angle, float pitch_Gyro, float dt);
 	void Jacobian();
 
-  uint8_t ground_detection_L();
-  uint8_t ground_detection_R();
-
+  bool ground_detection_L();
+  bool ground_detection_R();
 };
 
 void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
@@ -192,7 +191,7 @@ void VMC_leg_t::Jacobian()
 	this->VMC_data.torque_set[1] = this->VMC_data.j21 * this->VMC_data.F0 + this->VMC_data.j22 * this->VMC_data.Tp;//得到RightBack的输出轴期望力矩，Tp为沿中心轴的力矩 
 }
 
-uint8_t VMC_leg_t::ground_detection_R()
+bool VMC_leg_t::ground_detection_R()
 {
 	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//腿部机构的力+轮子重力，这里忽略了轮子质量*驱动轮竖直方向运动加速度
 //	vmc->FN=vmc->F0*arm_arm_cos_f32_f32(vmc->theta)+vmc->Tp*arm_arm_sin_f32_f32(vmc->theta)/vmc->L0
@@ -201,15 +200,15 @@ uint8_t VMC_leg_t::ground_detection_R()
 	if(this->VMC_data.FN<5.0f)
 	{
         //离地了
-	  return 1;
+	  return true;
 	}
 	else
 	{
-	  return 0;	
+	  return false;	
 	}
 }
 
-uint8_t VMC_leg_t::ground_detection_L()
+bool VMC_leg_t::ground_detection_L()
 {
 	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//腿部机构的力+轮子重力，这里忽略了轮子质量*驱动轮竖直方向运动加速度
 //	vmc->FN=vmc->F0*arm_arm_cos_f32_f32(vmc->theta)+vmc->Tp*arm_arm_sin_f32_f32(vmc->theta)/vmc->L0
@@ -218,11 +217,11 @@ uint8_t VMC_leg_t::ground_detection_L()
 	if(this->VMC_data.FN<5.0f)
 	{
         //离地了
-	  return 1;
+	  return true;
 	}
 	else
 	{
-	  return 0;	
+	  return false;	
 	}
 }
 
