@@ -3,7 +3,7 @@
 <title>Static Call Graph - [Blance_DEMO\Blance_DEMO.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image Blance_DEMO\Blance_DEMO.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat Aug 17 03:28:17 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat Aug 17 17:00:40 2024
 <BR><P>
 <H3>Maximum Stack Usage =        368 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2603,7 +2603,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[1b3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RM_FDCan_Init()
 </UL>
 
-<P><STRONG><a name="[100]"></a>chassisL_control_loop()</STRONG> (Thumb, 566 bytes, Stack size 40 bytes, total_stack.o(i._Z21chassisL_control_loopv))
+<P><STRONG><a name="[100]"></a>chassisL_control_loop()</STRONG> (Thumb, 570 bytes, Stack size 40 bytes, total_stack.o(i._Z21chassisL_control_loopv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = chassisL_control_loop() &rArr; RM_PID::GetPidPos(Kpid_t, double, double, double) &rArr; TD_quadratic::td_quadratic(float, bool) &rArr; NonLinear_Fun::Fhan_Fun(float, float, float, float) &rArr; __hardfp_sqrtf &rArr; __set_errno
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cos_f32
@@ -2611,14 +2611,14 @@ Global Symbols
 <LI><a href="#[1c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VMC_leg_t::Up_Left(float, float, float)
 <LI><a href="#[1c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VMC_leg_t::ground_detection_L()
 <LI><a href="#[1c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RM_PID::GetPidPos(Kpid_t, double, double, double)
-<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
-<LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit(float*, float, float)
+<LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
+<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit(float*, float, float)
 <LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LQR_K_calc(float*, float)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Chassis_Task_L
 </UL>
 
-<P><STRONG><a name="[104]"></a>chassisR_control_loop()</STRONG> (Thumb, 416 bytes, Stack size 32 bytes, total_stack.o(i._Z21chassisR_control_loopv))
+<P><STRONG><a name="[104]"></a>chassisR_control_loop()</STRONG> (Thumb, 436 bytes, Stack size 32 bytes, total_stack.o(i._Z21chassisR_control_loopv))
 <BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = chassisR_control_loop() &rArr; RM_PID::GetPidPos(Kpid_t, double, double, double) &rArr; TD_quadratic::td_quadratic(float, bool) &rArr; NonLinear_Fun::Fhan_Fun(float, float, float, float) &rArr; __hardfp_sqrtf &rArr; __set_errno
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;arm_cos_f32
@@ -2626,7 +2626,7 @@ Global Symbols
 <LI><a href="#[1c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VMC_leg_t::Jacobian()
 <LI><a href="#[1c8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VMC_leg_t::ground_detection_R()
 <LI><a href="#[1c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RM_PID::GetPidPos(Kpid_t, double, double, double)
-<LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit(float*, float, float)
+<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit(float*, float, float)
 <LI><a href="#[1c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LQR_K_calc(float*, float)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Chassis_Task_R
@@ -2636,14 +2636,17 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Chassis_Task_L
 </UL>
 
-<P><STRONG><a name="[103]"></a>ChassisR_feedback_update()</STRONG> (Thumb, 236 bytes, Stack size 12 bytes, total_stack.o(i._Z24ChassisR_feedback_updatev))
+<P><STRONG><a name="[103]"></a>ChassisR_feedback_update()</STRONG> (Thumb, 282 bytes, Stack size 12 bytes, total_stack.o(i._Z24ChassisR_feedback_updatev))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = ChassisR_feedback_update()
+</UL>
+<BR>[Calls]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Limit(float*, float, float)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Chassis_Task_R
 </UL>
 
-<P><STRONG><a name="[1c2]"></a>Limit(float*, float, float)</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, total_stack.o(i._Z5LimitPfff))
-<BR><BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassisR_control_loop()
+<P><STRONG><a name="[1c3]"></a>Limit(float*, float, float)</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, total_stack.o(i._Z5LimitPfff))
+<BR><BR>[Called By]<UL><LI><a href="#[103]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ChassisR_feedback_update()
+<LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassisR_control_loop()
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassisL_control_loop()
 </UL>
 
@@ -2674,7 +2677,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[170]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_UARTEx_RxEventCallback
 </UL>
 
-<P><STRONG><a name="[1c3]"></a>TD_quadratic::td_quadratic(float, bool)</STRONG> (Thumb, 320 bytes, Stack size 8 bytes, total_stack.o(i._ZN12TD_quadratic12td_quadraticEfb))
+<P><STRONG><a name="[1c2]"></a>TD_quadratic::td_quadratic(float, bool)</STRONG> (Thumb, 320 bytes, Stack size 8 bytes, total_stack.o(i._ZN12TD_quadratic12td_quadraticEfb))
 <BR><BR>[Stack]<UL><LI>Max Depth = 48<LI>Call Chain = TD_quadratic::td_quadratic(float, bool) &rArr; NonLinear_Fun::Fhan_Fun(float, float, float, float) &rArr; __hardfp_sqrtf &rArr; __set_errno
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NonLinear_Fun::Fign_Fun(float)
@@ -2706,13 +2709,13 @@ Global Symbols
 <LI><a href="#[1cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NonLinear_Fun::Fsg_Fun(float, float)
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrtf
 </UL>
-<BR>[Called By]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
+<BR>[Called By]<UL><LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
 </UL>
 
 <P><STRONG><a name="[1c9]"></a>NonLinear_Fun::Fign_Fun(float)</STRONG> (Thumb, 34 bytes, Stack size 0 bytes, total_stack.o(i._ZN13NonLinear_Fun8Fign_FunEf))
 <BR><BR>[Called By]<UL><LI><a href="#[1ca]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NonLinear_Fun::Fhan_Fun(float, float, float, float)
 <LI><a href="#[1cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NonLinear_Fun::Fsg_Fun(float, float)
-<LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
+<LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
 </UL>
 
 <P><STRONG><a name="[184]"></a>RM_RefereeSystem::RM_RefereeSystemParse(__UART_HandleTypeDef*)</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, rm_refereesystem.o(i._ZN16RM_RefereeSystem21RM_RefereeSystemParseEP20__UART_HandleTypeDef))
@@ -2803,7 +2806,7 @@ Global Symbols
 <P><STRONG><a name="[1c4]"></a>RM_PID::GetPidPos(Kpid_t, double, double, double)</STRONG> (Thumb, 282 bytes, Stack size 40 bytes, total_stack.o(i._ZN6RM_PID9GetPidPosE6Kpid_tddd))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = RM_PID::GetPidPos(Kpid_t, double, double, double) &rArr; TD_quadratic::td_quadratic(float, bool) &rArr; NonLinear_Fun::Fhan_Fun(float, float, float, float) &rArr; __hardfp_sqrtf &rArr; __set_errno
 </UL>
-<BR>[Calls]<UL><LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
+<BR>[Calls]<UL><LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TD_quadratic::td_quadratic(float, bool)
 </UL>
 <BR>[Called By]<UL><LI><a href="#[104]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassisR_control_loop()
 <LI><a href="#[100]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;chassisL_control_loop()

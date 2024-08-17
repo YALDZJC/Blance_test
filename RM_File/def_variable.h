@@ -187,6 +187,10 @@ typedef struct
 	uint8_t prejump_flag;//预跳跃标志
 	uint8_t recover_flag;//一种情况下的倒地自起标志
 	
+	bool right_flag;
+	bool left_flag;
+
+	
 } chassis_t;
 
 chassis_t chassis;
@@ -226,9 +230,9 @@ VMC_leg_t VMC_leg_L( L1, L2, L3, L4, L5 );
 VMC_leg_t VMC_leg_R( L1, L2, L3, L4, L5 );
 
 float Turn_out, Kp = 3, Kd = 0.3;
-float Roll_out, roll_Kp = 200, roll_Kd = 10;
+float Roll_out, roll_Kp = 150, roll_Kd = 10;
 
-float tar_L0, FF = 13, rc_dc = 0.0002, go_dc = 0.001,turn_dc = -0.00005;
+float tar_L0, FF = 13, rc_dc = 0.05, go_dc = 0.001,turn_dc = -0.00005;
 //float Kp = -200,Kd = -40,P_out,D_out;
 float tar_dc = 0.0001;
 float Poly_Coefficient[12][4]={	{-88.3079710751263,	68.9068310796955,	-30.0003802287502,	-0.197774178106864},

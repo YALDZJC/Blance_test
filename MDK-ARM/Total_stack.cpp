@@ -253,17 +253,30 @@ void ChassisR_feedback_update()
 	chassis.PithR = INS.Pitch;
 	chassis.PithGyroR = INS.Gyro[0];
 	
-	chassis.leg_tar += RC_RY*rc_dc;
+	if(RC_RY > 15)
+		chassis.leg_tar += rc_dc;
+	else
+		chassis.leg_tar -= rc_dc;
+	
+	//期望值更新
+//	chassis.leg_tar = RC_RY*0.02424;
 	chassis.v_tar = RC_LY*go_dc;
 	chassis.x_tar += chassis.v_tar*0.003;
 	chassis.turn_tar += RC_LX*turn_dc;
 	chassis.roll_tar = RC_RX*0.0004;
-//	Limit(&chassis.roll_tar ,0.15, 0.15);
-
+	
+	//腿长限幅
+	Limit(&chassis.leg_tar ,7, 16);
+	
+	if(INS.Pitch < (-3.1415926f/4.0f) || INS.Pitch > (3.1415926f/4.0f))
+	{
+		chassis.recover_flag = 1;
+	}
+	else
+		chassis.recover_flag = 0;
 }
 
-float diffL, diffR;
-/*********************控制循环*********************/
+/*********************左腿控制循环*********************/
 void chassisL_control_loop()
 {
 	VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time)*3.0f/1000.0f);
@@ -273,6 +286,7 @@ void chassisL_control_loop()
 		LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);	
 	}
 	
+	//轮毂电机LQR计算
 	chassis.wheel_T[1] =(LQR_K[0]*(VMC_leg_L.VMC_data.theta-0.0f)
 											 +LQR_K[1]*(VMC_leg_L.VMC_data.d_theta-0.0f)
 											 +LQR_K[2]*(chassis.x_tar-chassis.x_filter)
@@ -280,7 +294,7 @@ void chassisL_control_loop()
 											 +LQR_K[4]*(chassis.PithL-0.0f)
 											 +LQR_K[5]*(chassis.PithGyroL-0.0f));
 	
-//右边髋关节输出力矩				
+	//关节电机LQR计算			
 	VMC_leg_L.VMC_data.Tp=(LQR_K[6]*(VMC_leg_L.VMC_data.theta-0.0f)
 												+LQR_K[7]*(VMC_leg_L.VMC_data.d_theta-0.0f)
 												+LQR_K[8]*(chassis.x_tar-chassis.x_filter)
@@ -288,27 +302,29 @@ void chassisL_control_loop()
 												+LQR_K[10]*(chassis.PithL-0.0f)
 												+LQR_K[11]*(chassis.PithGyroL-0.0f));
 	
-//	Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 2);
+	//转向环计算
 	Turn_out = Kp * (chassis.turn_tar - chassis.Yaw_L) + Kd * (0 - INS.Gyro[2]);
 	chassis.wheel_T[1] = chassis.wheel_T[1] - Turn_out;
 	
-	Limit(&chassis.wheel_T[1] ,-1, 1);
-	Limit(&chassis.leg_tar ,6.5, 18);
-
+	//Roll轴补偿
 	Gyro_roll.td_quadratic(-INS.Gyro[1]);
 	chassis.roll_f0 = roll_Kp*(chassis.roll_tar - INS.Roll) + roll_Kd*(0 - INS.Gyro[1]);
 	
+	//腿长与轮毂输出限幅
+	Limit(&chassis.wheel_T[1] ,-1, 1);
+
+	//腿长F0计算
 	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
 	VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout + chassis.roll_f0;
-	VMC_leg_L.ground_detection_L();
-	
+
+	//防劈叉PID
 	theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 2);
-	
 	VMC_leg_L.VMC_data.Tp = VMC_leg_L.VMC_data.Tp + theta_err.pid.cout;
-	
-	VMC_leg_L.Jacobian();
-	
-	if(VMC_leg_L.ground_detection_L())
+//VMC_leg_L.VMC_data.Tp = 0;
+
+	chassis.left_flag = VMC_leg_L.ground_detection_L();
+	//离地检测
+	if(chassis.left_flag == true && chassis.recover_flag == false)
 	{
 		chassis.wheel_T[1] = 0.0f;
 		chassis.x_filter = 0.0f;
@@ -316,8 +332,17 @@ void chassisL_control_loop()
 		chassis.x_tar = chassis.x_filter;
 		chassis.turn_tar = chassis.Yaw_L;
 	}
+	else if(chassis.recover_flag == 1)
+	{
+		VMC_leg_L.VMC_data.Tp = 0.0f;
+	}
+	
+	
+	//雅可比计算
+	VMC_leg_L.Jacobian();
 }
 
+/*********************右腿控制循环*********************/
 void chassisR_control_loop()
 {
 		VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time)*3.0f/1000.0f);
@@ -327,6 +352,7 @@ void chassisR_control_loop()
 			LQR_K[i]=LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_R.VMC_data.L0);	
 		}
 		
+		//轮毂LQR计算
 		chassis.wheel_T[0] =(LQR_K[0]*(VMC_leg_R.VMC_data.theta-0.0f)
 												 +LQR_K[1]*(VMC_leg_R.VMC_data.d_theta-0.0f)
 												 +LQR_K[2]*(chassis.x_filter-chassis.x_tar)
@@ -334,7 +360,7 @@ void chassisR_control_loop()
 												 +LQR_K[4]*(chassis.PithR-0.0f)
 												 +LQR_K[5]*(chassis.PithGyroR-0.0f));
 		
-	//右边髋关节输出力矩				
+		//关节LQR计算
 		VMC_leg_R.VMC_data.Tp=(LQR_K[6]*(VMC_leg_R.VMC_data.theta-0.0f)
 													+LQR_K[7]*(VMC_leg_R.VMC_data.d_theta-0.0f)
 													+LQR_K[8]*(chassis.x_filter-chassis.x_tar)
@@ -342,23 +368,34 @@ void chassisR_control_loop()
 													+LQR_K[10]*(chassis.PithR-0.0f)
 													+LQR_K[11]*(chassis.PithGyroR-0.0f));
 		
+		
+		//转向环计算
 		chassis.wheel_T[0] = chassis.wheel_T[0] - Turn_out;
-		
+		//轮毂力矩限幅
 		Limit(&chassis.wheel_T[0] ,-1, 1);
-
-//		roll.GetPidPos(K_roll, chassis.roll, INS.Roll, 10);
-
-		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
-		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
-		VMC_leg_R.ground_detection_R();
 		
+		//右腿长设置
+		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+		
+		//F0总输出
+		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
+		
+		//Tp总输出
 		VMC_leg_R.VMC_data.Tp = VMC_leg_R.VMC_data.Tp + theta_err.pid.cout;
-		VMC_leg_R.Jacobian();
+//VMC_leg_R.VMC_data.Tp = 0;
+		chassis.right_flag = VMC_leg_R.ground_detection_R();
 
-		if(VMC_leg_R.ground_detection_R())
+		if(chassis.right_flag == true && chassis.recover_flag == false)
 		{
 			chassis.wheel_T[0] = 0.0f;
 		}
+		else if(chassis.recover_flag == 1)
+		{
+			VMC_leg_R.VMC_data.Tp = 0.0f;
+		}
+		//雅可比计算
+		VMC_leg_R.Jacobian();
+
 }
 
 /*********************左腿任务*********************/

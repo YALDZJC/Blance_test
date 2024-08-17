@@ -202,6 +202,7 @@ bool VMC_leg_t::ground_detection_R()
         //ภ๋ตุมห
 	  return true;
 	}
+	
 	else
 	{
 	  return false;	
