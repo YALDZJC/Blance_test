@@ -207,6 +207,7 @@ RM_PID roll;
 Kpid_t K_roll(0, 0, 0);
 //滤波相关
 TD_quadratic V_speed(150);
+TD_quadratic Gyro_roll(150);
 
 //舵机相关
 RM_Servos servos;//仓门舵机 
@@ -225,7 +226,7 @@ VMC_leg_t VMC_leg_L( L1, L2, L3, L4, L5 );
 VMC_leg_t VMC_leg_R( L1, L2, L3, L4, L5 );
 
 float Turn_out, Kp = 3, Kd = 0.3;
-float Roll_out, roll_Kp, roll_Kd;
+float Roll_out, roll_Kp = 200, roll_Kd = 10;
 
 float tar_L0, FF = 13, rc_dc = 0.0002, go_dc = 0.001,turn_dc = -0.00005;
 //float Kp = -200,Kd = -40,P_out,D_out;

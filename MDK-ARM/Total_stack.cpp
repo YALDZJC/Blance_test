@@ -257,7 +257,9 @@ void ChassisR_feedback_update()
 	chassis.v_tar = RC_LY*go_dc;
 	chassis.x_tar += chassis.v_tar*0.003;
 	chassis.turn_tar += RC_LX*turn_dc;
-	chassis.roll_tar += RC_RX*turn_dc;
+	chassis.roll_tar = RC_RX*0.0004;
+//	Limit(&chassis.roll_tar ,0.15, 0.15);
+
 }
 
 float diffL, diffR;
@@ -293,6 +295,7 @@ void chassisL_control_loop()
 	Limit(&chassis.wheel_T[1] ,-1, 1);
 	Limit(&chassis.leg_tar ,6.5, 18);
 
+	Gyro_roll.td_quadratic(-INS.Gyro[1]);
 	chassis.roll_f0 = roll_Kp*(chassis.roll_tar - INS.Roll) + roll_Kd*(0 - INS.Gyro[1]);
 	
 	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
@@ -452,10 +455,10 @@ void DM_Send_Task()
 {
 	 dir = RM_Clicker::ISDir();
 	
-		*((float*)&send_str2[0]) = chassis.wheel_T[0];
-		*((float*)&send_str2[4]) = chassis.wheel_T[1];
+		*((float*)&send_str2[0]) = Gyro_roll.x1;
+		*((float*)&send_str2[4]) = INS.Gyro[1];
 
-//		*((float*)&send_str2[8]) = VMC_leg_L.VMC_data.theta;
+		*((float*)&send_str2[8]) = chassis.roll_tar;
 //		*((float*)&send_str2[12]) = VMC_leg_L.VMC_data.d_theta;
 //		*((float*)&send_str2[16]) = chassis.PithGyroR;
 //		*((float*)&send_str2[20]) = chassis.PithGyroL;
