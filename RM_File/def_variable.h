@@ -64,6 +64,9 @@ x							x						 2						 x						 x						2							急停（9）
 	#define On_Friction_Dial_Warehouse_doors (MODE3 && RM_Clicker::RC_Ctl.rc.s2 == 1)//打开摩擦轮+仓门+拨盘
 	#define Keyboard_Mouse (MODE3 && RM_Clicker::RC_Ctl.rc.s2 == 3)//（2）
 	#define Combinatoria_Movement (MODE3 && RM_Clicker::RC_Ctl.rc.s2 == 2)//（3）组合运动模式
+	
+	#define JUMP_MODE (MODE2 && RM_Clicker::RC_Ctl.rc.s2 == 1)//跳跃模式
+
 	#define Emergency_Stop (MODE2 && RM_Clicker::RC_Ctl.rc.s2 == 2)//（9）急停模式
 #elif CONTROL_SIG == 1
 	#define chassis_RC_LX (Gimbal_to_Chassis_Data.int16_RC_LX)//左手x
@@ -75,6 +78,7 @@ x							x						 2						 x						 x						2							急停（9）
 #define CHASSIS_FOLLOW_GIMBAL (Gimbal_to_Chassis_Data.chassis_follow_gimbal)//底盘跟随云台模式
 #define GIMBAL_HOST_CHASSIS (Gimbal_to_Chassis_Data.gimbal_host_chassis)//底盘跟随云台模式
 #define CHASSIS_GYRO (Gimbal_to_Chassis_Data.chassis_gyro)//底盘跟随云台模式
+
 #define CHASSIS_TOP (Gimbal_to_Chassis_Data.chassis_top)//底盘跟随云台模式
 #define MAX_CHASSIS_SPEED 16384.0//最大速度
 #define CHASSIS_SPEED_ZOOM_VW 1.0//放大因子
@@ -182,14 +186,26 @@ typedef struct
 	float roll_f0;//roll轴补偿
 	float leg_tp;//防劈叉补偿
 	
-	uint8_t start_flag;//启动标志
 
 	uint8_t prejump_flag;//预跳跃标志
 	uint8_t recover_flag;//一种情况下的倒地自起标志
 	
+	uint8_t count_key;
+	
+	bool jump_flag;
+	
 	bool right_flag;
 	bool left_flag;
 
+	struct
+	{
+		uint8_t start_flag;
+		uint8_t jump_status_L;
+		uint8_t jump_status_R;
+		uint8_t jump_time_L;
+		uint8_t jump_time_R;
+
+	}jump;
 	
 } chassis_t;
 

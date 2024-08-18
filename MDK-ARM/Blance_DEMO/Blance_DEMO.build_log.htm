@@ -110,7 +110,7 @@ compiling Total_stack.cpp...
   	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
 ../RM_File/VMC.h(168): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//得到状态变量1
-../RM_File/def_variable.h(273): warning:  #1-D: last line of file ends without a newline
+../RM_File/def_variable.h(289): warning:  #1-D: last line of file ends without a newline
   		
 Total_stack.cpp(234): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	VMC_leg_L.VMC_data.phi1=pi/2.0f + L_joint_0.DM_Data.position;
@@ -122,11 +122,19 @@ Total_stack.cpp(251): warning:  #1035-D: single-precision operand implicitly con
   	VMC_leg_R.VMC_data.phi4=pi/2.0f + R_joint_3.DM_Data.position;
 Total_stack.cpp(264): warning:  #1035-D: single-precision operand implicitly converted to double-precision
   	chassis.x_tar += chassis.v_tar*0.003;
-Total_stack.cpp: 47 warnings, 0 errors
+Total_stack.cpp(307): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			if( VMC_leg_L.VMC_data.L0 < 0.1 )
+Total_stack.cpp(326): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			if( VMC_leg_L.VMC_data.L0 > 0.16 )
+Total_stack.cpp(392): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			if( VMC_leg_R.VMC_data.L0 < 0.1 )
+Total_stack.cpp(405): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  			if( VMC_leg_R.VMC_data.L0 > 0.16 )
+Total_stack.cpp: 51 warnings, 0 errors
 linking...
-Program Size: Code=52372 RO-data=6136 RW-data=888 ZI-data=44864  
+Program Size: Code=53152 RO-data=6132 RW-data=888 ZI-data=44864  
 FromELF: creating hex file...
-"Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 47 Warning(s).
+"Blance_DEMO\Blance_DEMO.axf" - 0 Error(s), 51 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -154,19 +162,19 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:CORE:5.4.0
 
    * Component: ARM::CMSIS:DSP:Source:1.8.0
-      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
-      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
-      Include file:  CMSIS\DSP\Include\arm_math.h
-      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
       Source file:   CMSIS\DSP\Source\DistanceFunctions\DistanceFunctions.c
+      Source file:   CMSIS\DSP\Source\ControllerFunctions\ControllerFunctions.c
       Source file:   CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
-      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
-      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
       Source file:   CMSIS\DSP\Source\StatisticsFunctions\StatisticsFunctions.c
+      Source file:   CMSIS\DSP\Source\BasicMathFunctions\BasicMathFunctions.c
+      Source file:   CMSIS\DSP\Source\FilteringFunctions\FilteringFunctions.c
+      Include file:  CMSIS\DSP\Include\arm_math.h
       Source file:   CMSIS\DSP\Source\BayesFunctions\BayesFunctions.c
+      Source file:   CMSIS\DSP\Source\ComplexMathFunctions\ComplexMathFunctions.c
       Source file:   CMSIS\DSP\Source\CommonTables\CommonTables.c
-      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
+      Source file:   CMSIS\DSP\Source\MatrixFunctions\MatrixFunctions.c
       Source file:   CMSIS\DSP\Source\SupportFunctions\SupportFunctions.c
+      Source file:   CMSIS\DSP\Source\TransformFunctions\TransformFunctions.c
       Source file:   CMSIS\DSP\Source\SVMFunctions\SVMFunctions.c
 Build Time Elapsed:  00:00:04
 </pre>

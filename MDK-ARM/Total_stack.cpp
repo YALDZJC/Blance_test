@@ -274,6 +274,166 @@ void ChassisR_feedback_update()
 	}
 	else
 		chassis.recover_flag = 0;
+	
+	if(JUMP_MODE == true)
+	{
+		if(!chassis.jump_flag)
+		{
+			if(++chassis.count_key > 200)
+			{
+				if(chassis.jump.start_flag == 0)
+				{
+					chassis.jump.start_flag = 1;
+					chassis.jump_flag = true;
+				}
+			}
+		}
+	}
+	else
+	{
+		chassis.count_key = 0;
+		chassis.jump_flag = false;
+	}
+}
+
+/*********************跳跃控制循环*********************/
+void jump_loop_L()
+{
+	if(chassis.jump.start_flag == 1)
+	{
+		if(chassis.jump.jump_status_L == 0)
+		{
+			chassis.leg_tar = 7.5;
+			if( VMC_leg_L.VMC_data.L0 < 0.1 )
+			{
+				chassis.jump.jump_time_L++;
+			}
+			if( chassis.jump.jump_time_L >= 10 && chassis.jump.jump_time_R >= 10)
+			{
+				chassis.jump.jump_status_L = 1;
+				chassis.jump.jump_status_R = 1;
+				chassis.jump.jump_time_L = 0;
+				chassis.jump.jump_time_R = 0;
+			}
+		}
+		
+		else if(chassis.jump.jump_status_L == 1)
+		{
+			chassis.leg_tar = 40;
+
+//			VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + 	L0_L.GetPidPos(L0_L_pid, 40/100, VMC_leg_L.VMC_data.L0, 100);
+			
+			if( VMC_leg_L.VMC_data.L0 > 0.16 )
+			{
+				chassis.jump.jump_time_L++;
+			}
+			if( chassis.jump.jump_time_L >= 10 && chassis.jump.jump_time_R >= 10)
+			{
+				chassis.jump.jump_status_L = 2;
+				chassis.jump.jump_status_R = 2;
+				chassis.jump.jump_time_L = 0;
+				chassis.jump.jump_time_R = 0;
+			}
+		}
+		
+		else if(chassis.jump.jump_status_L == 2)
+		{
+				chassis.leg_tar = 7.5;
+//			VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+			
+			if( VMC_leg_L.VMC_data.L0 < chassis.leg_tar + 0.01f )
+			{
+				chassis.jump.jump_time_L++;
+			}
+			if( chassis.jump.jump_time_L >= 10 && chassis.jump.jump_time_R >= 10)
+			{
+				chassis.jump.jump_status_L = 3;
+				chassis.jump.jump_status_R = 3;
+				chassis.jump.jump_time_L = 0;
+				chassis.jump.jump_time_R = 0;
+			}
+		}
+		else
+		{
+			chassis.leg_tar = 7.5;
+			VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + 	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+		}
+		
+		if( chassis.jump.jump_status_L == 3 && chassis.jump.jump_status_R == 3 )
+		{
+			chassis.jump.jump_status_L = 0;
+			chassis.jump.jump_status_R = 0;
+
+			chassis.jump.jump_time_L = 0;
+			chassis.jump.jump_time_R = 0;
+
+			chassis.jump.start_flag = 0;
+		}
+		VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+	}
+	else
+	{
+		L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+		VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout + chassis.roll_f0;	
+	}
+
+}
+
+/*********************跳跃控制循环*********************/
+void jump_loop_R()
+{
+	if(chassis.jump.start_flag == 1)
+	{
+		chassis.leg_tar = 7.5;
+		if(chassis.jump.jump_status_R == 0)
+		{
+//			VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + 	L0_R.GetPidPos(L0_L_pid, 7.5/100, VMC_leg_R.VMC_data.L0, 100);
+			
+			if( VMC_leg_R.VMC_data.L0 < 0.1 )
+			{
+				chassis.jump.jump_time_R++;
+			}
+
+		}
+		
+		else if(chassis.jump.jump_status_R == 1)
+		{
+			chassis.leg_tar = 40;
+
+//			VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.GetPidPos(L0_L_pid, 40/100, VMC_leg_R.VMC_data.L0, 100);
+			
+			if( VMC_leg_R.VMC_data.L0 > 0.16 )
+			{
+				chassis.jump.jump_time_R++;
+			}
+
+		}
+		
+		else if(chassis.jump.jump_status_R == 2)
+		{
+			chassis.leg_tar = 7.5;
+
+//			VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + 	L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+			
+			if( VMC_leg_R.VMC_data.L0 < chassis.leg_tar + 0.01f )
+			{
+				chassis.jump.jump_time_R++;
+			}
+		}
+		else
+		{
+						chassis.leg_tar = 7.5;
+
+//			VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + 	L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+		}
+			VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + 	L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+	}
+	else
+	{
+		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
+		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
+	}
+
 }
 
 /*********************左腿控制循环*********************/
@@ -314,8 +474,11 @@ void chassisL_control_loop()
 	Limit(&chassis.wheel_T[1] ,-1, 1);
 
 	//腿长F0计算
-	L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
-	VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout + chassis.roll_f0;
+//L0_L.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_L.VMC_data.L0, 100);
+//VMC_leg_L.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout + chassis.roll_f0;	
+	
+	jump_loop_L();
+
 
 	//防劈叉PID
 	theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 2);
@@ -341,6 +504,8 @@ void chassisL_control_loop()
 	//雅可比计算
 	VMC_leg_L.Jacobian();
 }
+
+
 
 /*********************右腿控制循环*********************/
 void chassisR_control_loop()
@@ -378,7 +543,8 @@ void chassisR_control_loop()
 		L0_R.GetPidPos(L0_L_pid, chassis.leg_tar/100, VMC_leg_R.VMC_data.L0, 100);
 		
 		//F0总输出
-		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
+//		VMC_leg_R.VMC_data.F0 = FF/arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout - chassis.roll_f0;
+			jump_loop_R();
 		
 		//Tp总输出
 		VMC_leg_R.VMC_data.Tp = VMC_leg_R.VMC_data.Tp + theta_err.pid.cout;
