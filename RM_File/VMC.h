@@ -8,50 +8,50 @@
 
 typedef struct
 {
-	/*×óÓÒÁ½ÍÈµÄ¹«¹²²ÎÊý£¬¹Ì¶¨²»±ä*/
-	float l5;//AE³¤¶È //µ¥Î»Îªm
-	float	l1;//µ¥Î»Îªm
-	float l2;//µ¥Î»Îªm
-	float l3;//µ¥Î»Îªm
-	float l4;//µ¥Î»Îªm
+	/*å·¦å³ä¸¤è…¿çš„å…¬å…±å‚æ•°ï¼Œå›ºå®šä¸å˜*/
+	float l5;//AEé•¿åº¦ //å•ä½ä¸ºm
+	float	l1;//å•ä½ä¸ºm
+	float l2;//å•ä½ä¸ºm
+	float l3;//å•ä½ä¸ºm
+	float l4;//å•ä½ä¸ºm
 	
-	float XB,YB;//BµãµÄ×ø±ê
-	float XD,YD;//DµãµÄ×ø±ê
+	float XB,YB;//Bç‚¹çš„åæ ‡
+	float XD,YD;//Dç‚¹çš„åæ ‡
 	
-	float XC,YC;//CµãµÄÖ±½Ç×ø±ê
-	float L0,phi0;//CµãµÄ¼«×ø±ê
+	float XC,YC;//Cç‚¹çš„ç›´è§’åæ ‡
+	float L0,phi0;//Cç‚¹çš„æžåæ ‡
 	float alpha;
 	float d_alpha;	
 	
-	float lBD;//BDÁ½µãµÄ¾àÀë
+	float lBD;//BDä¸¤ç‚¹çš„è·ç¦»
 	
-	float d_phi0;//ÏÖÔÚCµã½Ç¶Èphi0µÄ±ä»»ÂÊ
-	float last_phi0;//ÉÏÒ»´ÎCµã½Ç¶È£¬ÓÃÓÚ¼ÆËã½Ç¶Èphi0µÄ±ä»»ÂÊd_phi0
+	float d_phi0;//çŽ°åœ¨Cç‚¹è§’åº¦phi0çš„å˜æ¢çŽ‡
+	float last_phi0;//ä¸Šä¸€æ¬¡Cç‚¹è§’åº¦ï¼Œç”¨äºŽè®¡ç®—è§’åº¦phi0çš„å˜æ¢çŽ‡d_phi0
 
-	float A0,B0,C0;//ÖÐ¼ä±äÁ¿
+	float A0,B0,C0;//ä¸­é—´å˜é‡
 	float phi2,phi3;
 	float phi1,phi4;
 	
-	float j11,j12,j21,j22;//µÑ¿¨¶û¿Õ¼äÁ¦µ½¹Ø½Ú¿Õ¼äµÄÁ¦µÄÑÅ¿É±È¾ØÕóÏµÊý
+	float j11,j12,j21,j22;//ç¬›å¡å°”ç©ºé—´åŠ›åˆ°å…³èŠ‚ç©ºé—´çš„åŠ›çš„é›…å¯æ¯”çŸ©é˜µç³»æ•°
 	float torque_set[2];
 
 	float F0;
 	float Tp;
 	
 	float theta;
-	float d_theta;//thetaµÄÒ»½×µ¼Êý
+	float d_theta;//thetaçš„ä¸€é˜¶å¯¼æ•°
 	float last_d_theta;
-	float dd_theta;//thetaµÄ¶þ½×µ¼Êý
+	float dd_theta;//thetaçš„äºŒé˜¶å¯¼æ•°
 	
-	float d_L0;//L0µÄÒ»½×µ¼Êý
-	float dd_L0;//L0µÄ¶þ½×µ¼Êý
+	float d_L0;//L0çš„ä¸€é˜¶å¯¼æ•°
+	float dd_L0;//L0çš„äºŒé˜¶å¯¼æ•°
 	float last_L0;
 	float last_d_L0;
 	
-	float FN;//Ö§³ÖÁ¦
+	float FN;//æ”¯æŒåŠ›
 	
 	uint8_t first_flag;
-	uint8_t leg_flag;//ÍÈ³¤Íê³É±êÖ¾
+	uint8_t leg_flag;//è…¿é•¿å®Œæˆæ ‡å¿—
 }VMC_t;
 
 class VMC_leg_t
@@ -83,10 +83,10 @@ void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
 	Pitch_L = 0.0f - pitch_Angle;
 	Pith_GyroL = 0.0f - pitch_Gyro;
 
-	this->VMC_data.YD = this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi4);//DµÄy×ø±ê
-	this->VMC_data.YB = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1);//BµÄy×ø±ê
-	this->VMC_data.XD = this->VMC_data.l5 + this->VMC_data.l4 * arm_cos_f32(this->VMC_data.phi4);//DµÄx×ø±ê
-	this->VMC_data.XB = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1); //BµÄx×ø±ê
+	this->VMC_data.YD = this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi4);//Dçš„yåæ ‡
+	this->VMC_data.YB = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1);//Bçš„yåæ ‡
+	this->VMC_data.XD = this->VMC_data.l5 + this->VMC_data.l4 * arm_cos_f32(this->VMC_data.phi4);//Dçš„xåæ ‡
+	this->VMC_data.XB = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1); //Bçš„xåæ ‡
 			
 	this->VMC_data.lBD = sqrt((this->VMC_data.XD - this->VMC_data.XB)*(this->VMC_data.XD - this->VMC_data.XB) + (this->VMC_data.YD - this->VMC_data. YB) * (this->VMC_data.YD - this->VMC_data.YB));
 	
@@ -95,13 +95,13 @@ void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
 	this->VMC_data.C0 = this->VMC_data.l2 * this->VMC_data.l2 + this->VMC_data.lBD*this->VMC_data.lBD - this->VMC_data.l3 * this->VMC_data.l3;
 	this->VMC_data.phi2 = 2*atan2f((this->VMC_data.B0 + sqrt(this->VMC_data.A0 * this->VMC_data.A0 + this->VMC_data.B0 * this->VMC_data.B0 - this->VMC_data.C0 * this->VMC_data.C0)), this->VMC_data.A0 + this->VMC_data.C0);			
 	this->VMC_data.phi3 = atan2f(this->VMC_data.YB - this->VMC_data.YD + this->VMC_data.l2 * arm_sin_f32(this->VMC_data.phi2), this->VMC_data.XB - this->VMC_data.XD + this->VMC_data.l2 * arm_cos_f32(this->VMC_data.phi2));
-	//CµãÖ±½Ç×ø±ê
+	//Cç‚¹ç›´è§’åæ ‡
 	this->VMC_data.XC = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1) + this->VMC_data.l2 * arm_cos_f32(this->VMC_data.phi2);
 	this->VMC_data.YC = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1) + this->VMC_data.l2  *arm_sin_f32(this->VMC_data.phi2);
-	//Cµã¼«×ø±ê
+	//Cç‚¹æžåæ ‡
 	this->VMC_data.L0 = sqrt((this->VMC_data.XC - this->VMC_data.l5/2.0f) * (this->VMC_data.XC - this->VMC_data.l5/2.0f) + this->VMC_data.YC * this->VMC_data.YC);
 		
-	this->VMC_data.phi0 = atan2f(this->VMC_data.YC,(this->VMC_data.XC - this->VMC_data.l5/2.0f));//phi0ÓÃÓÚ¼ÆËãlqrÐèÒªµÄtheta		
+	this->VMC_data.phi0 = atan2f(this->VMC_data.YC,(this->VMC_data.XC - this->VMC_data.l5/2.0f));//phi0ç”¨äºŽè®¡ç®—lqréœ€è¦çš„theta		
 	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
 		
 	if(this->VMC_data.first_flag == 0)
@@ -110,16 +110,16 @@ void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
 		this->VMC_data.first_flag = 1;
 	}
 
-	this->VMC_data.d_phi0 = (this->VMC_data.phi0 - this->VMC_data.last_phi0)/dt;//¼ÆËãphi0±ä»¯ÂÊ£¬d_phi0ÓÃÓÚ¼ÆËãlqrÐèÒªµÄd_theta
+	this->VMC_data.d_phi0 = (this->VMC_data.phi0 - this->VMC_data.last_phi0)/dt;//è®¡ç®—phi0å˜åŒ–çŽ‡ï¼Œd_phi0ç”¨äºŽè®¡ç®—lqréœ€è¦çš„d_theta
 	this->VMC_data.d_alpha = 0.0f - this->VMC_data.d_phi0 ;
 		
-	this->VMC_data.theta = pi/2.0f-Pitch_L - this->VMC_data.phi0;//µÃµ½×´Ì¬±äÁ¿1
-	this->VMC_data.d_theta = (-Pith_GyroL - this->VMC_data.d_phi0);//µÃµ½×´Ì¬±äÁ¿2
+	this->VMC_data.theta = pi/2.0f-Pitch_L - this->VMC_data.phi0;//å¾—åˆ°çŠ¶æ€å˜é‡1
+	this->VMC_data.d_theta = (-Pith_GyroL - this->VMC_data.d_phi0);//å¾—åˆ°çŠ¶æ€å˜é‡2
 		
 	this->VMC_data.last_phi0 = this->VMC_data.phi0 ;
     
-	this->VMC_data.d_L0=(this->VMC_data.L0 - this->VMC_data.last_L0)/dt;//ÍÈ³¤L0µÄÒ»½×µ¼Êý
-    this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//ÍÈ³¤L0µÄ¶þ½×µ¼Êý
+	this->VMC_data.d_L0=(this->VMC_data.L0 - this->VMC_data.last_L0)/dt;//è…¿é•¿L0çš„ä¸€é˜¶å¯¼æ•°
+    this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//è…¿é•¿L0çš„äºŒé˜¶å¯¼æ•°
 		
 	this->VMC_data.last_d_L0 = this->VMC_data.d_L0;
 	this->VMC_data.last_L0 = this->VMC_data.L0;
@@ -135,10 +135,10 @@ void VMC_leg_t::Up_Right(float pitch_Angle, float pitch_Gyro, float dt)
 	Pitch_R = pitch_Angle;
 	Pith_GyroR = pitch_Gyro;
 
-	this->VMC_data.YD = this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi4);//DµÄy×ø±ê
-	this->VMC_data.YB = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1);//BµÄy×ø±ê
-	this->VMC_data.XD = this->VMC_data.l5 + this->VMC_data.l4 * arm_cos_f32(this->VMC_data.phi4);//DµÄx×ø±ê
-	this->VMC_data.XB = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1); //BµÄx×ø±ê
+	this->VMC_data.YD = this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi4);//Dçš„yåæ ‡
+	this->VMC_data.YB = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1);//Bçš„yåæ ‡
+	this->VMC_data.XD = this->VMC_data.l5 + this->VMC_data.l4 * arm_cos_f32(this->VMC_data.phi4);//Dçš„xåæ ‡
+	this->VMC_data.XB = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1); //Bçš„xåæ ‡
 			
 	this->VMC_data.lBD = sqrt((this->VMC_data.XD - this->VMC_data.XB)*(this->VMC_data.XD - this->VMC_data.XB) + (this->VMC_data.YD - this->VMC_data. YB) * (this->VMC_data.YD - this->VMC_data.YB));
 	
@@ -147,13 +147,13 @@ void VMC_leg_t::Up_Right(float pitch_Angle, float pitch_Gyro, float dt)
 	this->VMC_data.C0 = this->VMC_data.l2 * this->VMC_data.l2 + this->VMC_data.lBD*this->VMC_data.lBD - this->VMC_data.l3 * this->VMC_data.l3;
 	this->VMC_data.phi2 = 2*atan2f((this->VMC_data.B0 + sqrt(this->VMC_data.A0 * this->VMC_data.A0 + this->VMC_data.B0 * this->VMC_data.B0 - this->VMC_data.C0 * this->VMC_data.C0)), this->VMC_data.A0 + this->VMC_data.C0);			
 	this->VMC_data.phi3 = atan2f(this->VMC_data.YB - this->VMC_data.YD + this->VMC_data.l2 * arm_sin_f32(this->VMC_data.phi2), this->VMC_data.XB - this->VMC_data.XD + this->VMC_data.l2 * arm_cos_f32(this->VMC_data.phi2));
-	//CµãÖ±½Ç×ø±ê
+	//Cç‚¹ç›´è§’åæ ‡
 	this->VMC_data.XC = this->VMC_data.l1 * arm_cos_f32(this->VMC_data.phi1) + this->VMC_data.l2 * arm_cos_f32(this->VMC_data.phi2);
 	this->VMC_data.YC = this->VMC_data.l1 * arm_sin_f32(this->VMC_data.phi1) + this->VMC_data.l2  *arm_sin_f32(this->VMC_data.phi2);
-	//Cµã¼«×ø±ê
+	//Cç‚¹æžåæ ‡
 	this->VMC_data.L0 = sqrt((this->VMC_data.XC - this->VMC_data.l5/2.0f) * (this->VMC_data.XC - this->VMC_data.l5/2.0f) + this->VMC_data.YC * this->VMC_data.YC);
 		
-	this->VMC_data.phi0 = atan2f(this->VMC_data.YC,(this->VMC_data.XC - this->VMC_data.l5/2.0f));//phi0ÓÃÓÚ¼ÆËãlqrÐèÒªµÄtheta		
+	this->VMC_data.phi0 = atan2f(this->VMC_data.YC,(this->VMC_data.XC - this->VMC_data.l5/2.0f));//phi0ç”¨äºŽè®¡ç®—lqréœ€è¦çš„theta		
 	this->VMC_data.alpha = pi/2.0f-this->VMC_data.phi0 ;
 		
 	if(this->VMC_data.first_flag == 0)
@@ -162,16 +162,16 @@ void VMC_leg_t::Up_Right(float pitch_Angle, float pitch_Gyro, float dt)
 		this->VMC_data.first_flag = 1;
 	}
 
-	this->VMC_data.d_phi0 = (this->VMC_data.phi0 - this->VMC_data.last_phi0)/dt;//¼ÆËãphi0±ä»¯ÂÊ£¬d_phi0ÓÃÓÚ¼ÆËãlqrÐèÒªµÄd_theta
+	this->VMC_data.d_phi0 = (this->VMC_data.phi0 - this->VMC_data.last_phi0)/dt;//è®¡ç®—phi0å˜åŒ–çŽ‡ï¼Œd_phi0ç”¨äºŽè®¡ç®—lqréœ€è¦çš„d_theta
 	this->VMC_data.d_alpha = 0.0f - this->VMC_data.d_phi0 ;
 		
-	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//µÃµ½×´Ì¬±äÁ¿1
-	this->VMC_data.d_theta = (-Pith_GyroR - this->VMC_data.d_phi0);//µÃµ½×´Ì¬±äÁ¿2
+	this->VMC_data.theta = pi/2.0f-Pitch_R - this->VMC_data.phi0;//å¾—åˆ°çŠ¶æ€å˜é‡1
+	this->VMC_data.d_theta = (-Pith_GyroR - this->VMC_data.d_phi0);//å¾—åˆ°çŠ¶æ€å˜é‡2
 		
 	this->VMC_data.last_phi0 = this->VMC_data.phi0 ;
     
-	this->VMC_data.d_L0=(this->VMC_data.L0 - this->VMC_data.last_L0)/dt;//ÍÈ³¤L0µÄÒ»½×µ¼Êý
-  this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//ÍÈ³¤L0µÄ¶þ½×µ¼Êý
+	this->VMC_data.d_L0=(this->VMC_data.L0 - this->VMC_data.last_L0)/dt;//è…¿é•¿L0çš„ä¸€é˜¶å¯¼æ•°
+  this->VMC_data.dd_L0=(this->VMC_data.d_L0 - this->VMC_data.last_d_L0)/dt;//è…¿é•¿L0çš„äºŒé˜¶å¯¼æ•°
 		
 	this->VMC_data.last_d_L0 = this->VMC_data.d_L0;
 	this->VMC_data.last_L0 = this->VMC_data.L0;
@@ -187,19 +187,19 @@ void VMC_leg_t::Jacobian()
 	this->VMC_data.j21 = (this->VMC_data.l4 * arm_sin_f32(this->VMC_data.phi0 - this->VMC_data.phi2) * arm_sin_f32(this->VMC_data.phi3 - this->VMC_data.phi4)) / arm_sin_f32(this->VMC_data.phi3-this->VMC_data.phi2);
 	this->VMC_data.j22 = (this->VMC_data.l4 * arm_cos_f32(this->VMC_data.phi0 - this->VMC_data.phi2) * arm_sin_f32(this->VMC_data.phi3 - this->VMC_data.phi4)) / (this->VMC_data.L0 * arm_sin_f32(this->VMC_data.phi3 - this->VMC_data.phi2));
 	
-	this->VMC_data.torque_set[0] = this->VMC_data.j11 * this->VMC_data.F0 + this->VMC_data.j12 * this->VMC_data.Tp;//µÃµ½RightFrontµÄÊä³öÖáÆÚÍûÁ¦¾Ø£¬F0ÎªÎåÁ¬¸Ë»ú¹¹Ä©¶ËÑØÍÈµÄÍÆÁ¦ 
-	this->VMC_data.torque_set[1] = this->VMC_data.j21 * this->VMC_data.F0 + this->VMC_data.j22 * this->VMC_data.Tp;//µÃµ½RightBackµÄÊä³öÖáÆÚÍûÁ¦¾Ø£¬TpÎªÑØÖÐÐÄÖáµÄÁ¦¾Ø 
+	this->VMC_data.torque_set[0] = this->VMC_data.j11 * this->VMC_data.F0 + this->VMC_data.j12 * this->VMC_data.Tp;//å¾—åˆ°RightFrontçš„è¾“å‡ºè½´æœŸæœ›åŠ›çŸ©ï¼ŒF0ä¸ºäº”è¿žæ†æœºæž„æœ«ç«¯æ²¿è…¿çš„æŽ¨åŠ› 
+	this->VMC_data.torque_set[1] = this->VMC_data.j21 * this->VMC_data.F0 + this->VMC_data.j22 * this->VMC_data.Tp;//å¾—åˆ°RightBackçš„è¾“å‡ºè½´æœŸæœ›åŠ›çŸ©ï¼ŒTpä¸ºæ²¿ä¸­å¿ƒè½´çš„åŠ›çŸ© 
 }
 
 bool VMC_leg_t::ground_detection_R()
 {
-	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//ÍÈ²¿»ú¹¹µÄÁ¦+ÂÖ×ÓÖØÁ¦£¬ÕâÀïºöÂÔÁËÂÖ×ÓÖÊÁ¿*Çý¶¯ÂÖÊúÖ±·½ÏòÔË¶¯¼ÓËÙ¶È
+	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//è…¿éƒ¨æœºæž„çš„åŠ›+è½®å­é‡åŠ›ï¼Œè¿™é‡Œå¿½ç•¥äº†è½®å­è´¨é‡*é©±åŠ¨è½®ç«–ç›´æ–¹å‘è¿åŠ¨åŠ é€Ÿåº¦
 //	vmc->FN=vmc->F0*arm_arm_cos_f32_f32(vmc->theta)+vmc->Tp*arm_arm_sin_f32_f32(vmc->theta)/vmc->L0
 //+0.6f*(ins->MotionAccel_n[2]-vmc->dd_L0*arm_arm_cos_f32_f32(vmc->theta)+2.0f*vmc->d_L0*vmc->d_theta*arm_arm_sin_f32_f32(vmc->theta)+vmc->L0*vmc->dd_theta*arm_arm_sin_f32_f32(vmc->theta)+vmc->L0*vmc->d_theta*vmc->d_theta*arm_arm_cos_f32_f32(vmc->theta));
  
 	if(this->VMC_data.FN<5.0f)
 	{
-        //ÀëµØÁË
+        //ç¦»åœ°äº†
 	  return true;
 	}
 	
@@ -211,13 +211,13 @@ bool VMC_leg_t::ground_detection_R()
 
 bool VMC_leg_t::ground_detection_L()
 {
-	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//ÍÈ²¿»ú¹¹µÄÁ¦+ÂÖ×ÓÖØÁ¦£¬ÕâÀïºöÂÔÁËÂÖ×ÓÖÊÁ¿*Çý¶¯ÂÖÊúÖ±·½ÏòÔË¶¯¼ÓËÙ¶È
+	this->VMC_data.FN = this->VMC_data.F0 * arm_cos_f32(this->VMC_data.theta)+this->VMC_data.Tp*arm_sin_f32(this->VMC_data.theta)/this->VMC_data.L0+6.0f;//è…¿éƒ¨æœºæž„çš„åŠ›+è½®å­é‡åŠ›ï¼Œè¿™é‡Œå¿½ç•¥äº†è½®å­è´¨é‡*é©±åŠ¨è½®ç«–ç›´æ–¹å‘è¿åŠ¨åŠ é€Ÿåº¦
 //	vmc->FN=vmc->F0*arm_arm_cos_f32_f32(vmc->theta)+vmc->Tp*arm_arm_sin_f32_f32(vmc->theta)/vmc->L0
 //+0.6f*(ins->MotionAccel_n[2]-vmc->dd_L0*arm_arm_cos_f32_f32(vmc->theta)+2.0f*vmc->d_L0*vmc->d_theta*arm_arm_sin_f32_f32(vmc->theta)+vmc->L0*vmc->dd_theta*arm_arm_sin_f32_f32(vmc->theta)+vmc->L0*vmc->d_theta*vmc->d_theta*arm_arm_cos_f32_f32(vmc->theta));
  
 	if(this->VMC_data.FN<5.0f)
 	{
-        //ÀëµØÁË
+        //ç¦»åœ°äº†
 	  return true;
 	}
 	else

@@ -142,7 +142,7 @@ uint8_t send_GIMBAL_motor_size;//用于3508与6020错开发送
 uint32_t send_DM_motor_ms;
 
 //达妙电机
-DM L_joint_0(6, 3, 0);
+DM L_joint_0(1, 0x0f, 0);
 DM L_joint_1(8, 4, 0);
 DM L_Wheel(1, 0, 1);
 

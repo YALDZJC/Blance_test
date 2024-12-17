@@ -125,6 +125,7 @@ public:
 
 DM::DM(/* args */)
 {
+
 }
 
 //void DM::init()
@@ -236,16 +237,17 @@ inline void DM::on(FDCAN_HandleTypeDef* hcan)
 
 inline void DM::off(FDCAN_HandleTypeDef* hcan)
 {
-  *(uint64_t*)(&this->send_data[0]) = 0xFDFFFFFFFFFFFFFF;
+  *(uint64_t*)(&this->send_data[0]) = 0xFDFFFFFFFFFFFFFD;
 	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
 
 }
+
+
 
 inline void DM::clear_err(FDCAN_HandleTypeDef* hcan)
 {
   *(uint64_t*)(&this->send_data[0]) = 0xFBFFFFFFFFFFFFFF;
 	RM_FDorCAN_Send(hcan, this->DM_Data.Send_ID, this->send_data);//发送
-
 }
 
 inline bool DM::is_dir(int time)

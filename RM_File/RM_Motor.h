@@ -134,17 +134,16 @@ public:
 	double SpeedHelm(RM_PID *Rm_Pid, Kpid_t kpid, double speed, double feedback, double maxspeed, int isminmodeidx);
 };
 
-RM_Motor::RM_Motor(int16_t address, uint8_t MotorSize, Motor_t* MotorAddress,uint8_t* idxs)
-	:id_idx_bind(_Motor_ID_IDX_BIND_(idxs,MotorSize))
+RM_Motor::RM_Motor(int16_t address, uint8_t MotorSize, Motor_t* MotorAddress,uint8_t* idxs):id_idx_bind(_Motor_ID_IDX_BIND_(idxs,MotorSize))
 {
 	this->motorData = MotorAddress;
 	this->init_address = address;
 	for (uint8_t i = 0; i < MotorSize; i++)
-  {		
+	{		
     this->motorData[i].LastData[0] = -1;
 		this->motorData[i].address = address + idxs[i];		
-  }
-  this->MotorSize = MotorSize;
+	}
+  	this->MotorSize = MotorSize;
 }
 
 inline void RM_Motor::Parse(RM_FDorCAN_RxHeaderTypeDef RxHeader, uint8_t RxHeaderData[])
