@@ -1,7 +1,18 @@
-blance_demo\rm_refereesystemcrc.o: ..\RM_File\RM_RefereeSystemCRC.cpp
-blance_demo\rm_refereesystemcrc.o: ..\RM_File\RM_RefereeSystemCRC.h
-blance_demo\rm_refereesystemcrc.o: ..\RM_File\RM_stdxxx.h
-blance_demo\rm_refereesystemcrc.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
-blance_demo\rm_refereesystemcrc.o: E:\Keil5\ARM\ARMCC\Bin\..\include\math.h
-blance_demo\rm_refereesystemcrc.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
-blance_demo\rm_refereesystemcrc.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+blance_demo/rm_refereesystemcrc.o: ..\RM_File\RM_RefereeSystemCRC.cpp \
+  ..\RM_File\RM_RefereeSystemCRC.h ..\RM_File\RM_stdxxx.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\stdint.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\__config \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\math.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\math.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\limits \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\type_traits \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\cstddef \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\version \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stddef.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\__nullptr \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\__undef_macros \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\stdlib.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\libcxx\string.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h

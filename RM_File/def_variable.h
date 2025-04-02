@@ -84,7 +84,7 @@ float W_V_Init  = 1000;//小陀螺初始转速
 #define YD_V_SET 0.12//平移+-速度
 #define YD_V_Init 1 //平移初始转速
 
-float L1 = 0.075, L2 = 0.14, L3 = 0.14, L4 = 0.075, L5 = 0.08;
+float L1 = 0.15, L2 = 0.27, L3 = 0.27, L4 = 0.15, L5 = 0.15;
 /***************************变量声明*********************************/
 //当前车体运行状态选择
 enum now_chassis_mode_enum
@@ -195,7 +195,7 @@ RM_PID Turn;
 Kpid_t Turn_pid(1.5, 0, 0.1);
 
 RM_PID L0_L;
-Kpid_t L0_L_pid(320, 0, 10);
+Kpid_t L0_L_pid(0, 0, 0);
 
 RM_PID L0_R;
 Kpid_t L0_R_pid(0, 0, 0);
@@ -223,7 +223,7 @@ VMC_leg_t VMC_leg_R( L1, L2, L3, L4, L5 );
 
 float Turn_out, Kp, Kd;
 
-float tar_L0, FF = 13, rc_dc = 0.0002, go_dc = 0.001,turn_dc = -0.0001;
+float tar_L0, FF = 0, rc_dc = 0.0002, go_dc = 0.001,turn_dc = -0.0001;
 //float Kp = -200,Kd = -40,P_out,D_out;
 float tar_dc = 0.0001;
 float Poly_Coefficient[12][4]={	{-88.3079710751263,	68.9068310796955,	-30.0003802287502,	-0.197774178106864},

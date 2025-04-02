@@ -79,7 +79,7 @@ public:
 
 void VMC_leg_t::Up_Left(float pitch_Angle, float pitch_Gyro, float dt)
 {
-    static float Pitch_L=0.0f;
+  static float Pitch_L=0.0f;
 	static float Pith_GyroL=0.0f;
 	Pitch_L = 0.0f - pitch_Angle;
 	Pith_GyroL = 0.0f - pitch_Gyro;

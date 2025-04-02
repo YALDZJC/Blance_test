@@ -260,7 +260,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 //		Chassis_Task();
 	}
   if (htim->Instance == TIM12) {
-		DM_Send_Task();
+//		DM_Send_Task();
   }
   /* USER CODE END Callback 1 */
 }

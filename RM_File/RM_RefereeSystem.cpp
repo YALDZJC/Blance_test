@@ -314,7 +314,7 @@ void RM_RefereeSystemSendDataN(const graphic_data_struct_t graphic_data_struct[]
 	memcpy(tx_buf,&RM_RefereeSystemDataTemp,sizeof(RM_RefereeSystemDataTemp));
 	Append_CRC8_Check_Sum(tx_buf,CRC8LEN);
 	Append_CRC16_Check_Sum(tx_buf,CRC16LEN(RM_RefereeSystemDataTemp.data_length));
-	HAL_UART_Transmit_DMA( &RM_RefereeSystemHuart, tx_buf, sizeof(tx_buf) );
+//	HAL_UART_Transmit_DMA( &RM_RefereeSystemHuart, tx_buf, sizeof(tx_buf) );
 }
 //数据发送客户端绘制字符串
 void RM_RefereeSystemSendStr(const ext_client_custom_character_t ext_client_custom_character)

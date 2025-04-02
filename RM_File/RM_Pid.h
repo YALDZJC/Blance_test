@@ -259,63 +259,63 @@ float RM_FeedForward::UpData2(float target)
 	return this->feedForward.cout;
 }
 
-//UDE系统
-typedef struct
-{
-	float Xnt;
-	float I_u;
-	float ft;
-	float f;
-	float k;
-	float B;
-	float max;
-	float separate_break;
-	double cout;
-}UDE_t;
+////UDE系统
+//typedef struct
+//{
+//	float Xnt;
+//	float I_u;
+//	float ft;
+//	float f;
+//	float k;
+//	float B;
+//	float max;
+//	float separate_break;
+//	double cout;
+//}UDE_t;
 
-class UDE
-{
-public:
-	UDE_t ude;
+//class UDE
+//{
+//public:
+//	UDE_t ude;
 
-	UDE(double k, double B, double max, double separate_break)
-	{
-			ude.k = k;
-			ude.B = B;
-			ude.max = max;
-			ude.separate_break = separate_break;
-			ude.Xnt = 0;
-			ude.I_u = 0;
-			ude.ft = 0;
-			ude.f = 0;
-			ude.cout = 0;
-	}
+//	UDE(double k, double B, double max, double separate_break)
+//	{
+//			ude.k = k;
+//			ude.B = B;
+//			ude.max = max;
+//			ude.separate_break = separate_break;
+//			ude.Xnt = 0;
+//			ude.I_u = 0;
+//			ude.ft = 0;
+//			ude.f = 0;
+//			ude.cout = 0;
+//	}
 
-	double UDE::UpData(double Xnt, double u, double err);
-};
+//	double UDE::UpData(double Xnt, double u, double err);
+//};
 
-double UDE::UpData(double Xnt, double u, double err)
-{
-    this->ude.Xnt = Xnt;
+//double UDE::UpData(double Xnt, double u, double err)
+//{
+//    this->ude.Xnt = Xnt;
 
-	  // 分离断点处理
-		if (abs(err) > this->ude.separate_break)
-		{
-				this->ude.I_u += 0.3 * ((u / 1.52587891) * 0.00018311 * 0.741) * this->ude.B;
-		}
-		else
-		{
-				this->ude.I_u += ((u / 1.52587891) * 0.00018311 * 0.741) * this->ude.B;
-		}
-	
-    // 积分限幅
-    if (this->ude.I_u > this->ude.max) this->ude.I_u = this->ude.max;
-    if (this->ude.I_u < -this->ude.max) this->ude.I_u = -this->ude.max;
+//	  // 分离断点处理
+//		if (abs(err) > this->ude.separate_break)
+//		{
+//				this->ude.I_u += 0.3 * ((u / 1.52587891) * 0.00018311 * 0.741) * this->ude.B;
+//		}
+//		else
+//		{
+//				this->ude.I_u += ((u / 1.52587891) * 0.00018311 * 0.741) * this->ude.B;
+//		}
+//	
+//    // 积分限幅
+//    if (this->ude.I_u > this->ude.max) this->ude.I_u = this->ude.max;
+//    if (this->ude.I_u < -this->ude.max) this->ude.I_u = -this->ude.max;
 
 
 
-    this->ude.ft = this->ude.k * (this->ude.Xnt - this->ude.I_u);
-    this->ude.cout = this->ude.ft / this->ude.B;
+//    this->ude.ft = this->ude.k * (this->ude.Xnt - this->ude.I_u);
+//    this->ude.cout = this->ude.ft / this->ude.B;
 
-    return this->ude.cout;
-}
+//    return this->ude.cout;
+//}

@@ -1,14 +1,24 @@
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\CommonTables\CommonTables.c
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\CommonTables\arm_common_tables.c
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_math.h
-blance_demo\commontables.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
-blance_demo\commontables.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
-blance_demo\commontables.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
-blance_demo\commontables.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h
-blance_demo\commontables.o: E:\Keil5\ARM\ARMCC\Bin\..\include\math.h
-blance_demo\commontables.o: E:\Keil5\ARM\ARMCC\Bin\..\include\float.h
-blance_demo\commontables.o: E:\Keil5\ARM\ARMCC\Bin\..\include\limits.h
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_common_tables.h
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\CommonTables\arm_const_structs.c
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_const_structs.h
-blance_demo\commontables.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\CommonTables\arm_mve_tables.c
+blance_demo/commontables.o: \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\CommonTables\CommonTables.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\CommonTables\arm_common_tables.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_types.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_armclang.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\math.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\float.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\limits.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_common_tables.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\fast_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_memory.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\none.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\utils.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\basic_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\CommonTables\arm_const_structs.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_const_structs.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\transform_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\complex_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\CommonTables\arm_mve_tables.c

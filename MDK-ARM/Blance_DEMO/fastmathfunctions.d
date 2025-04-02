@@ -1,20 +1,38 @@
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\FastMathFunctions.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_cos_f32.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_math.h
-blance_demo\fastmathfunctions.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
-blance_demo\fastmathfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
-blance_demo\fastmathfunctions.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
-blance_demo\fastmathfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h
-blance_demo\fastmathfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\math.h
-blance_demo\fastmathfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\float.h
-blance_demo\fastmathfunctions.o: E:\Keil5\ARM\ARMCC\Bin\..\include\limits.h
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_common_tables.h
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_cos_q15.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_cos_q31.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_sin_f32.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_sin_q15.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_sin_q31.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_sqrt_q15.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_sqrt_q31.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_vexp_f32.c
-blance_demo\fastmathfunctions.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Source\FastMathFunctions\arm_vlog_f32.c
+blance_demo/fastmathfunctions.o: \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\FastMathFunctions.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_cos_f32.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\fast_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_types.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_armclang.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\math.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\float.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\limits.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_memory.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\none.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\utils.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\basic_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_common_tables.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_cos_q15.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_cos_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_sin_f32.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_sin_q15.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_sin_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_sqrt_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_sqrt_q15.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vexp_f32.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vexp_f64.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vlog_f32.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vlog_f64.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_divide_q15.c \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_divide_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vlog_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_vlog_q15.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_atan2_f32.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_atan2_q31.c \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Source\FastMathFunctions\arm_atan2_q15.c

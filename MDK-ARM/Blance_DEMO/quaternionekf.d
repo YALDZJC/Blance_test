@@ -1,12 +1,34 @@
-blance_demo\quaternionekf.o: ..\User\Algorithm\EKF\QuaternionEKF.c
-blance_demo\quaternionekf.o: ..\User\Algorithm\EKF\QuaternionEKF.h
-blance_demo\quaternionekf.o: ../User/Algorithm/kalman/kalman_filter.h
-blance_demo\quaternionekf.o: C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS\5.7.0\CMSIS\DSP\Include\arm_math.h
-blance_demo\quaternionekf.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdint.h
-blance_demo\quaternionekf.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\string.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\math.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\float.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\limits.h
-blance_demo\quaternionekf.o: E:\Keil5\ARM\ARMCC\Bin\..\include\stdlib.h
+blance_demo/quaternionekf.o: ..\User\Algorithm\EKF\QuaternionEKF.c \
+  ..\User\Algorithm\EKF\QuaternionEKF.h \
+  ..\User\Algorithm\kalman\kalman_filter.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_types.h \
+  ..\Drivers\CMSIS\Include\cmsis_compiler.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdint.h \
+  ..\Drivers\CMSIS\Include\cmsis_armclang.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_compat.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\arm_acle.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\string.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\math.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\float.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\limits.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\arm_math_memory.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\none.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\utils.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\basic_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\interpolation_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\bayes_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\statistics_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\fast_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\matrix_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\complex_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\controller_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\support_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\distance_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\svm_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\svm_defines.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\transform_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\filtering_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\quaternion_math_functions.h \
+  C:\Users\Administrator.DESKTOP-IAACAVF\AppData\Local\Arm\Packs\ARM\CMSIS-DSP\1.15.0\Include\dsp\window_functions.h \
+  D:\Keil5\ARM\ARMCLANG\Bin\..\include\stdlib.h
