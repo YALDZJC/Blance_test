@@ -10,11 +10,10 @@ namespace BSP::Motor::BM
 // 参数结构体定义
 struct Parameters
 {
-    double reduction_ratio;      // 减速比
-    double torque_constant;      // 力矩常数 (Nm/A)
-    double feedback_current_max; // 反馈最大电流 (A)
-    double current_max;          // 最大电流 (A)
-    double encoder_resolution;   // 编码器分辨率
+    double reduction_ratio;    // 减速比
+    double torque_constant;    // 力矩常数 (Nm/A)
+    double current_constant;   // 电流常数 (A)
+    double encoder_resolution; // 编码器分辨率
 
     // 自动计算的参数
     double encoder_to_deg; // 编码器值转角度系数
@@ -33,19 +32,18 @@ struct Parameters
      *
      * @param rr 减速比
      * @param tc 力矩常数
-     * @param fmc 反馈最大电流值
-     * @param mc 实际最大电流
+     * @param mc 电流常数
      * @param er 编码器分辨率
      */
-    Parameters(double rr, double tc, double fmc, double mc, double er)
-        : reduction_ratio(rr), torque_constant(tc), feedback_current_max(fmc), current_max(mc), encoder_resolution(er)
+    Parameters(double rr, double tc, double mc, double er)
+        : reduction_ratio(rr), torque_constant(tc), current_constant(mc), encoder_resolution(er)
     {
         constexpr double Pi = 3.14159265358979323846;
         encoder_to_deg = 360.0 / encoder_resolution;
         rpm_to_radps = 1 / reduction_ratio / 60 * 2 * Pi;
         encoder_to_rpm = 0.1;
-        current_to_torque_coefficient = reduction_ratio * torque_constant / feedback_current_max * current_max / 1.414;
-        feedback_to_current_coefficient = current_max / feedback_current_max;
+        current_to_torque_coefficient = torque_constant;
+        feedback_to_current_coefficient = current_constant;
         deg_to_real = 1 / reduction_ratio;
     }
 };
@@ -116,10 +114,9 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
      */
     void setCAN(float torque, int id)
     {
-        // 将扭矩转化为发送值 扭矩 Nm = 给定电流值（A）/1.414 * 转矩常数（1.2Nm/A）
-        float cur = (torque * 1.414f) / params_.torque_constant;
+        float cur = torque / params_.torque_constant;
 
-        auto send_data = static_cast<int16_t>(cur * 100);
+        auto send_data = static_cast<int16_t>(torque);
 
         msd[(id - 1) * 2] = send_data >> 8;
         msd[(id - 1) * 2 + 1] = send_data << 8 >> 8;
@@ -130,9 +127,9 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
      *
      * @param han           Can句柄
      */
-    void sendCAN(FDCAN_HandleTypeDef *hcan)
+    void sendCAN(FDCAN_HandleTypeDef *hcan, uint8_t sendData[])
     {
-        RM_FDorCAN_Send(hcan, send_idxs_, msd); // 发送
+        RM_FDorCAN_Send(hcan, send_idxs_, sendData); // 发送
     }
 
     /**
@@ -178,9 +175,9 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
      * @param er 编码器分辨率
      * @return Parameters
      */
-    Parameters CreateParams(double rr, double tc, double fmc, double mc, double er) const
+    Parameters CreateParams(double rr, double tc, double mc, double er) const
     {
-        return Parameters(rr, tc, fmc, mc, er);
+        return Parameters(rr, tc, mc, er);
     }
 
     // // 定义参数生成方法的虚函数
@@ -206,9 +203,16 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
 
         this->unit_data_[i].current_A = feedback_[i].current * params.feedback_to_current_coefficient;
 
-        this->unit_data_[i].torque_Nm = feedback_[i].current * params.current_to_torque_coefficient;
-			
-					
+        this->unit_data_[i].torque_Nm = this->unit_data_[i].current_A * params.current_to_torque_coefficient;
+
+        if (Init_flag_ == false)
+        {
+            this->unit_data_[i].last_angle = this->unit_data_[i].angle_Deg;
+            this->unit_data_[i].add_angle = this->unit_data_[i].angle_Deg;
+
+            Init_flag_ = true;
+        }
+
         double lastData = this->unit_data_[i].last_angle;
         double Data = this->unit_data_[i].angle_Deg;
 
@@ -221,7 +225,7 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
 
         this->unit_data_[i].last_angle = Data;
         // 角度计算逻辑...
-				this->unit_data_[i].add_Rad = this->unit_data_[i].add_angle * params.deg_to_rad;
+        this->unit_data_[i].add_Rad = this->unit_data_[i].add_angle * params.deg_to_rad;
     }
 
     const int16_t init_address;   // 初始地址
@@ -229,6 +233,7 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
     uint8_t recv_idxs_[N];        // ID索引
     uint32_t send_idxs_;
     uint8_t msd[8];
+    bool Init_flag_ = false; // 是否初始化
 
   public:
     Parameters params_; // 转国际单位参数列表
@@ -247,7 +252,7 @@ template <uint8_t N> class BMMotorBase : public MotorBase<N>
 };
 
 /**
- * @brief 配置6020电机的参数
+ * @brief 配置PB1010B电机的参数
  *
  * @tparam N 电机数量
  */
@@ -265,7 +270,32 @@ template <uint8_t N> class PB1010B : public BMMotorBase<N>
     PB1010B(uint16_t Init_id, const uint8_t (&recv_idxs)[N], uint32_t send_idxs)
         : BMMotorBase<N>(Init_id, recv_idxs, send_idxs,
                          // 直接构造参数对象
-                         Parameters(1.0, 1.2, 7500, 75, 32768))
+                         // 扭矩 Nm = 给定电流值（A）/1.414 * 转矩常数（1.2Nm/A）所以得出常数为0.848
+                         Parameters(1.0, 0.848, 0.01, 32768))
+    {
+    }
+};
+
+/**
+ * @brief 配置M1505B电机的参数
+ *
+ * @tparam N 电机数量
+ */
+template <uint8_t N> class M1505B : public BMMotorBase<N>
+{
+  public:
+    // 子类构造时传递参数
+    /**
+     * @brief dji电机构造函数
+     *
+     * @param Init_id 初始ID
+     * @param recv_idxs_ 电机ID列表
+     */
+    M1505B(uint16_t Init_id, const uint8_t (&recv_idxs)[N], uint32_t send_idxs)
+        : BMMotorBase<N>(Init_id, recv_idxs, send_idxs,
+                         // 直接构造参数对象
+                         // （实际的 Iq 电流值 = 设置值 * 55 / 32767，单位是 A）转化为转矩常数变为 0.0013428
+                         Parameters(1.0, 0.8, 0.0016785, 32768))
     {
     }
 };
@@ -276,7 +306,10 @@ template <uint8_t N> class PB1010B : public BMMotorBase<N>
  * 构造函数的第一个参数为初始ID，第二个参数为电机ID列表,第三个参数是发送的ID
  *
  */
-inline PB1010B<2> MotorP1010R(0x50, {5, 6}, 0x33);
-inline PB1010B<2> MotorP1010L(0x50, {1, 2}, 0x32);
+inline PB1010B<2> MotorP1010R(0x50, {1, 2}, 0x32);
+inline PB1010B<2> MotorP1010L(0x50, {5, 6}, 0x33);
+
+inline M1505B<1> MotorM1505R(0x96, {4}, 0x32);
+inline M1505B<1> MotorM1505L(0x96, {8}, 0x33);
 
 } // namespace BSP::Motor::BM

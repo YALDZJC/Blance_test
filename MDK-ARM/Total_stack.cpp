@@ -76,7 +76,6 @@ void Clear_ALL_Data()
 {
 }
 
-
 // 主跑初始化
 void Total_tasks_Init()
 {
@@ -121,6 +120,10 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
     HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &CHASSIS_RxHeader, CHASSIS_RxHeaderData);
 
     BSP::Motor::BM::MotorP1010R.Parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
+    BSP::Motor::BM::MotorP1010L.Parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
+
+    BSP::Motor::BM::MotorM1505R.Parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
+    BSP::Motor::BM::MotorM1505L.Parse(CHASSIS_RxHeader, CHASSIS_RxHeaderData);
 }
 
 // can_filo1中断接收
@@ -133,7 +136,6 @@ void HAL_FDCAN_RxFifo1Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
 
     if (hfdcan == &hfdcan2)
     {
-
     }
 }
 
@@ -173,57 +175,26 @@ void Limit(float *in, float min, float max)
 /*********************电机初始化*********************/
 void ChassisL_Init()
 {
-    for (int j = 0; j < 10; j++)
-    {
-        L_joint_0.on(&hfdcan2);
+    BSP::Motor::BM::MotorP1010L.On(&hfdcan1);
 
-        BSP::Motor::BM::MotorP1010R.On(&hfdcan1);
-
-        osDelay(1);
-    }
-    for (int j = 0; j < 10; j++)
-    {
-        L_joint_1.on(&hfdcan2);
-
-        osDelay(1);
-    }
-    for (int j = 0; j < 10; j++)
-    {
-        L_Wheel.on(&hfdcan2);
-
-        osDelay(1);
-    }
+    osDelay(1);
 }
 
 void ChassisR_Init()
 {
-    for (int j = 0; j < 10; j++)
-    {
-        R_joint_2.on(&hfdcan1);
+    BSP::Motor::BM::MotorP1010R.On(&hfdcan1);
 
-        osDelay(1);
-    }
-    for (int j = 0; j < 10; j++)
-    {
-        R_joint_3.on(&hfdcan1);
-
-        osDelay(1);
-    }
-    for (int j = 0; j < 10; j++)
-    {
-        R_Wheel.on(&hfdcan1);
-
-        osDelay(1);
-    }
+    osDelay(1);
 }
 
+float pitch_dade = 0.01;//??
 /*********************反馈值更新*********************/
 void ChassisL_feedback_update()
 {
-    VMC_leg_L.VMC_data.phi1 = pi / 2.0f + L_joint_0.DM_Data.position;
-    VMC_leg_L.VMC_data.phi4 = pi / 2.0f + L_joint_1.DM_Data.position;
+    VMC_leg_L.VMC_data.phi1 = pi / 2.0f + BSP::Motor::BM::MotorP1010L.getAddAngleRad(2);
+    VMC_leg_L.VMC_data.phi4 = pi / 2.0f + BSP::Motor::BM::MotorP1010L.getAddAngleRad(1);
 
-    chassis.PithL = 0 - INS.Pitch;
+    chassis.PithL = 0.0 - (INS.Pitch - pitch_dade);
     chassis.PithGyroL = 0 - INS.Gyro[0];
 
     chassis.Yaw_L = INS.YawTotalAngle;
@@ -236,32 +207,43 @@ void ChassisL_feedback_update()
 
 void ChassisR_feedback_update()
 {
-//		float forword_Rad = Zero_crossing_processing(0, BSP::Motor::BM::MotorP1010R.getAngleRad(1), 3.14);
-//		float back_Rad = Zero_crossing_processing(0, BSP::Motor::BM::MotorP1010R.getAngleRad(2), 3.14);
+    //		float forword_Rad = Zero_crossing_processing(0, BSP::Motor::BM::MotorP1010R.getAngleRad(1), 3.14);
+    //		float back_Rad = Zero_crossing_processing(0, BSP::Motor::BM::MotorP1010R.getAngleRad(2), 3.14);
 
-		VMC_leg_R.VMC_data.phi1 = pi / 2.0f + BSP::Motor::BM::MotorP1010R.getAddAngleRad(2);
+    VMC_leg_R.VMC_data.phi1 = pi / 2.0f + BSP::Motor::BM::MotorP1010R.getAddAngleRad(2);
     VMC_leg_R.VMC_data.phi4 = pi / 2.0f + BSP::Motor::BM::MotorP1010R.getAddAngleRad(1);
 
-    chassis.PithR = INS.Pitch;
+    chassis.PithR = INS.Pitch - pitch_dade;
     chassis.PithGyroR = INS.Gyro[0];
+	
+		chassis.roll=INS.Roll;
 
-    chassis.leg_tar += RC_RY * rc_dc;
-    chassis.v_tar = RC_LY * go_dc;
-    chassis.x_tar += chassis.v_tar * 0.003;
-    chassis.turn_tar += RC_LX * turn_dc;
+    chassis.leg_tar += RC_RY * 1.00000001e-07;
+    Limit(&chassis.leg_tar, 0.15, 0.35);
+
+    chassis.v_tar = RC_LY * 0.001;
+    chassis.x_tar += chassis.v_tar * 0.001;
+
+    chassis.turn_tar -= RC_LX * 0.00001;
 }
 
 float diffL, diffR;
 /*********************控制循环*********************/
+bool is_Tp;
+float set_R_TP;
+float set_L_TP;
+float roll_Kp, roll_Kd;
+
+float max_TP = 5.0f;
 void chassisL_control_loop()
 {
-    VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time) * 3.0f / 1000.0f);
+    VMC_leg_L.Up_Left(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time) * 1.0f / 1000.0f);
 
     for (int i = 0; i < 12; i++)
     {
-        LQR_K[i] = LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);
+//        LQR_K[i] = LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_L.VMC_data.L0);
     }
-
+//		td_theta_L.td_quadratic(VMC_leg_L.VMC_data.theta);
     chassis.wheel_T[1] =
         (LQR_K[0] * (VMC_leg_L.VMC_data.theta - 0.0f) + LQR_K[1] * (VMC_leg_L.VMC_data.d_theta - 0.0f) +
          LQR_K[2] * (chassis.x_tar - chassis.x_filter) + LQR_K[3] * (chassis.v_tar - chassis.v_filter) +
@@ -271,33 +253,41 @@ void chassisL_control_loop()
     VMC_leg_L.VMC_data.Tp =
         (LQR_K[6] * (VMC_leg_L.VMC_data.theta - 0.0f) + LQR_K[7] * (VMC_leg_L.VMC_data.d_theta - 0.0f) +
          LQR_K[8] * (chassis.x_tar - chassis.x_filter) + LQR_K[9] * (chassis.v_tar - chassis.v_filter) +
-         LQR_K[10] * (chassis.PithL - 0.0f) + LQR_K[11] * (chassis.PithGyroL - 0.0f));
+         LQR_K[10] * (0.0f - chassis.PithL) + LQR_K[11] * (0.0f - chassis.PithGyroL));
 
-    //	Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 2);
-    Turn_out = Kp * (chassis.turn_tar - chassis.Yaw_L) + Kd * (0 - INS.Gyro[2]);
-    chassis.wheel_T[1] = chassis.wheel_T[1] - Turn_out;
+    Turn.GetPidPos(Turn_pid, chassis.turn_tar, chassis.Yaw_L, 10);
+//    Turn_out = Kp * (chassis.turn_tar - chassis.Yaw_L) + Kd * (0 - INS.Gyro[2]);
+		chassis.roll_f0 = roll_Kp * (0-chassis.roll) - roll_Kd * (0 - INS.Gyro[1]);
+    chassis.wheel_T[1] = chassis.wheel_T[1] - Turn.pid.cout;
 
-    Limit(&chassis.wheel_T[1], -1, 1);
-    Limit(&chassis.leg_tar, 0.35, 0.18);
+    Limit(&chassis.wheel_T[1], -5, 5);
 
-    L0_L.GetPidPos(L0_L_pid, chassis.leg_tar / 100, VMC_leg_L.VMC_data.L0, 100);
-    VMC_leg_L.VMC_data.F0 = FF / arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout;
+    L0_L.GetPidPos(L0_L_pid, chassis.leg_tar, VMC_leg_L.VMC_data.L0, 1000);
+    VMC_leg_L.VMC_data.F0 = FF / arm_cos_f32(VMC_leg_L.VMC_data.theta) + L0_L.pid.cout - chassis.roll_f0;
 
-    theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 2);
+    theta_err.GetPidPos(K_theta_err, 0, chassis.theta_err, 10);
 
-    VMC_leg_L.VMC_data.Tp = VMC_leg_L.VMC_data.Tp + theta_err.pid.cout;
+    if (is_Tp == true)
+        VMC_leg_L.VMC_data.Tp = VMC_leg_L.VMC_data.Tp + theta_err.pid.cout;
+		else
+				VMC_leg_L.VMC_data.Tp = theta_err.pid.cout;
 
+		Limit(&VMC_leg_L.VMC_data.Tp, -max_TP, max_TP);
+
+		
     VMC_leg_L.Jacobian();
 }
 
+float out1, out2, out3, out4 ,out5, out6;
 void chassisR_control_loop()
 {
-    VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time) * 3.0f / 1000.0f);
+    VMC_leg_R.Up_Right(INS.Pitch, INS.Gyro[0], ((float)Up_Chassis_Time) * 1.0f / 1000.0f);
 
     for (int i = 0; i < 12; i++)
     {
-        LQR_K[i] = LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_R.VMC_data.L0);
+//        LQR_K[i] = LQR_K_calc(&Poly_Coefficient[i][0], VMC_leg_R.VMC_data.L0);
     }
+//		td_theta_R.td_quadratic(VMC_leg_R.VMC_data.theta);
 
     chassis.wheel_T[0] =
         (LQR_K[0] * (VMC_leg_R.VMC_data.theta - 0.0f) + LQR_K[1] * (VMC_leg_R.VMC_data.d_theta - 0.0f) +
@@ -308,23 +298,49 @@ void chassisR_control_loop()
     VMC_leg_R.VMC_data.Tp =
         (LQR_K[6] * (VMC_leg_R.VMC_data.theta - 0.0f) + LQR_K[7] * (VMC_leg_R.VMC_data.d_theta - 0.0f) +
          LQR_K[8] * (chassis.x_filter - chassis.x_tar) + LQR_K[9] * (chassis.v_filter - chassis.v_tar) +
-         LQR_K[10] * (chassis.PithR - 0.0f) + LQR_K[11] * (chassis.PithGyroR - 0.0f));
+         LQR_K[10] * (0.0f - chassis.PithR) + LQR_K[11] * (0.0f - chassis.PithGyroR));
+		
+		out1 = LQR_K[6] * (VMC_leg_R.VMC_data.theta - 0.0f) + LQR_K[7] * (VMC_leg_R.VMC_data.d_theta - 0.0f);
+		out2 = LQR_K[8] * (chassis.x_tar - chassis.x_filter) + LQR_K[9] * (chassis.v_tar - chassis.v_filter);
+		out3 = LQR_K[10] * (chassis.PithR - 0.0f) + LQR_K[11] * (chassis.PithGyroR - 0.0f);
+    chassis.wheel_T[0] = chassis.wheel_T[0] - Turn.pid.cout;
 
-    chassis.wheel_T[0] = chassis.wheel_T[0] - Turn_out;
+    Limit(&chassis.wheel_T[0], -5, 5);
 
-    Limit(&chassis.wheel_T[0], -1, 1);
+    L0_R.GetPidPos(L0_L_pid, chassis.leg_tar, VMC_leg_R.VMC_data.L0, 1000);
+    VMC_leg_R.VMC_data.F0 = FF / arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout + chassis.roll_f0;
 
-    L0_R.GetPidPos(L0_L_pid, chassis.leg_tar, VMC_leg_R.VMC_data.L0, 100);
-    VMC_leg_R.VMC_data.F0 = FF / arm_cos_f32(VMC_leg_R.VMC_data.theta) + L0_R.pid.cout;
+		
+    if (is_Tp == true)
+        VMC_leg_R.VMC_data.Tp = VMC_leg_R.VMC_data.Tp + theta_err.pid.cout;
+		else
+				VMC_leg_R.VMC_data.Tp = theta_err.pid.cout;
 
-    VMC_leg_R.VMC_data.Tp = 0;
+		
 
+		Limit(&VMC_leg_R.VMC_data.Tp, -max_TP, max_TP);
+
+		
     VMC_leg_R.Jacobian();
 }
 
 /*********************左腿任务*********************/
 float cur;
 float angle;
+bool is_on;
+
+uint8_t send_R[8];
+uint8_t send_L[8];
+
+void setCAN(float torque, int id, uint8_t msd[])
+{
+    auto send_data = static_cast<int16_t>(torque);
+
+    msd[(id - 1) * 2] = send_data >> 8;
+    msd[(id - 1) * 2 + 1] = send_data << 8 >> 8;
+}
+
+bool is_wheel;
 void Chassis_Task_L()
 {
     while (INS.ins_flag == 0)
@@ -337,10 +353,12 @@ void Chassis_Task_L()
     {
         ChassisL_feedback_update();
         chassisL_control_loop();
-
+			
+        auto P1010L_torque_constant = BSP::Motor::BM::MotorP1010L.params_.torque_constant;
+        auto M1505L_torque_constant = BSP::Motor::BM::MotorM1505L.params_.current_constant;
+			
         // 遥控器
-        if (Emergency_Stop == false)
-        {
+
             // 			//打开电机
             // 			L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, VMC_leg_L.VMC_data.torque_set[0]);
             // 			osDelay(Up_Chassis_Time);
@@ -353,37 +371,40 @@ void Chassis_Task_L()
             // 			osDelay(Up_Chassis_Time);
 
             // BSP::Motor::BM::MotorP1010B.setCAN(VMC_leg_L.VMC_data.torque_set[0], 2);
-						angle = BSP::Motor::BM::MotorP1010R.getAddAngleDeg(1);
-            BSP::Motor::BM::MotorP1010R.setCAN(VMC_leg_R.VMC_data.torque_set[1], 1);
-            BSP::Motor::BM::MotorP1010R.setCAN(VMC_leg_R.VMC_data.torque_set[0], 2);
-            BSP::Motor::BM::MotorP1010R.setCAN(0, 3);
-            BSP::Motor::BM::MotorP1010R.setCAN(0, 4);
+            angle = BSP::Motor::BM::MotorP1010L.getAddAngleDeg(1);
 
-            BSP::Motor::BM::MotorP1010R.sendCAN(&hfdcan1);
-						DM_Send_Task();
-						osDelay(1);
-        }
-        else if (Emergency_Stop == true)
+            setCAN((VMC_leg_L.VMC_data.torque_set[1] * P1010L_torque_constant) * 100, 1, send_L);
+
+            setCAN((VMC_leg_L.VMC_data.torque_set[0] * P1010L_torque_constant) * 100, 2, send_L);
+
+
+						td_out_R.td_quadratic(chassis.wheel_T[1]);
+
+						if(is_on == true)
+							setCAN(td_out_R.x1 / M1505L_torque_constant, 4, send_L);
+						else
+							setCAN(0, 4, send_L);
+
+            DM_Send_Task();
+        
+        if (Emergency_Stop == true)
         {
             // 打开电机
-            L_joint_0.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
-
-            L_joint_1.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
-
-            L_Wheel.ctrl_motor(&hfdcan2, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
-
-            //			chassis.turn_tar = chassis.total_yaw;
-            //			chassis.x_tar=chassis.x_filter;
-						osDelay(1);
+            // 打开电机
+            setCAN(0, 1, send_L);
+            setCAN(0, 2, send_L);
+            setCAN(0, 4, send_L);
 
         }
+				BSP::Motor::BM::MotorP1010L.sendCAN(&hfdcan1, send_L);
+        osDelay(1);
     }
 }
 
 /*********************右腿任务*********************/
+
+
+
 void Chassis_Task_R()
 {
     while (INS.ins_flag == 0)
@@ -396,39 +417,44 @@ void Chassis_Task_R()
     {
         ChassisR_feedback_update();
         chassisR_control_loop();
-
+			
+        auto P1010R_torque_constant = BSP::Motor::BM::MotorP1010R.params_.torque_constant;
+        auto M1505R_torque_constant = BSP::Motor::BM::MotorM1505R.params_.current_constant;
+			
         // 遥控器
-        if (Emergency_Stop == false)
+
+            setCAN((VMC_leg_R.VMC_data.torque_set[1] * P1010R_torque_constant) * 100, 1, send_R);
+
+            setCAN((VMC_leg_R.VMC_data.torque_set[0] * P1010R_torque_constant) * 100, 2, send_R);
+					
+						td_out_L.td_quadratic(chassis.wheel_T[0]);
+			
+						if(is_on == true)
+							setCAN(td_out_L.x1 / M1505R_torque_constant, 4, send_R);
+						if(is_on == false)
+							setCAN(0 / M1505R_torque_constant, 4, send_R);
+
+        
+        if (Emergency_Stop == true)
         {
             // 打开电机
-            R_joint_2.ctrl_motor(&hfdcan1, 0, 0, 0, 0, VMC_leg_R.VMC_data.torque_set[0]);
-            osDelay(Up_Chassis_Time);
+            setCAN(0, 1, send_R);
+            setCAN(0, 2, send_R);
+            setCAN(0, 4, send_R);
 
-            R_joint_3.ctrl_motor(&hfdcan1, 0, 0, 0, 0, VMC_leg_R.VMC_data.torque_set[1]);
-            osDelay(Up_Chassis_Time);
-
-            R_Wheel.ctrl_motor(&hfdcan1, 0, 0, 0, 0, chassis.wheel_T[0]);
-            //			R_Wheel.ctrl_motor(&hfdcan1,0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
+						chassis.x_tar = chassis.x_filter;
+						chassis.turn_tar = chassis.Yaw_L;
         }
-        else if (Emergency_Stop == true)
-        {
-            // 打开电机
-            R_joint_2.ctrl_motor(&hfdcan1, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
+				
+				BSP::Motor::BM::MotorP1010R.sendCAN(&hfdcan1, send_R);
+            osDelay(1);
 
-            R_joint_3.ctrl_motor(&hfdcan1, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
-
-            R_Wheel.ctrl_motor(&hfdcan1, 0, 0, 0, 0, 0);
-            osDelay(Up_Chassis_Time);
-        }
     }
 }
 
 void DM_Send_Task()
 {
-    dir = RM_Clicker::ISDir();
+    //    dir = RM_Clicker::ISDir();
 
     *((float *)&send_str2[0]) = INS.Pitch;
     *((float *)&send_str2[4]) = VMC_leg_L.VMC_data.L0;
@@ -501,15 +527,15 @@ void Kalman_task(void)
 
     while (1)
     {
-        wr = -R_Wheel.DM_Data.velocity - INS.Gyro[0] +
+        wr = -BSP::Motor::BM::MotorM1505R.getVelocityRads(1) - INS.Gyro[0] +
              VMC_leg_R.VMC_data.d_alpha; // 右边驱动轮转子相对大地角速度，这里定义的是顺时针为正
-        vrb = wr * 0.0603f +
+        vrb = wr * 0.09f +
               VMC_leg_R.VMC_data.L0 * VMC_leg_R.VMC_data.d_theta * arm_cos_f32(VMC_leg_R.VMC_data.theta) +
               VMC_leg_R.VMC_data.d_L0 * arm_sin_f32(VMC_leg_R.VMC_data.theta); // 机体b系的速度
 
-        wl = -L_Wheel.DM_Data.velocity + INS.Gyro[0] +
+        wl = -BSP::Motor::BM::MotorM1505L.getVelocityRads(1) + INS.Gyro[0] +
              VMC_leg_L.VMC_data.d_alpha; // 左边驱动轮转子相对大地角速度，这里定义的是顺时针为正
-        vlb = wl * 0.0603f +
+        vlb = wl * 0.09f +
               VMC_leg_L.VMC_data.L0 * VMC_leg_L.VMC_data.d_theta * arm_cos_f32(VMC_leg_L.VMC_data.theta) +
               VMC_leg_L.VMC_data.d_L0 * arm_sin_f32(VMC_leg_L.VMC_data.theta); // 机体b系的速度
 
@@ -518,12 +544,15 @@ void Kalman_task(void)
 
         // 原地自转的过程中v_filter和x_filter应该都是为0
         chassis.v_filter = vel_acc[0]; // 得到卡尔曼滤波后的速度
-        chassis.x_filter = chassis.x_filter + chassis.v_filter * ((float)OBSERVE_TIME / 1000.0f);
+        chassis.x_filter = chassis.x_filter + chassis.v_filter * ((float)1 / 1000.0f);
 
         // 如果想直接用轮子速度，不做融合的话可以这样
-        // chassis_move.v_filter=(chassis_move.wheel_motor[0].para.vel-chassis_move.wheel_motor[1].para.vel)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
-        // chassis_move.x_filter=chassis_move.x_filter+chassis_move.x_filter+chassis_move.v_filter*((float)OBSERVE_TIME/1000.0f);
+//        chassis.v_filter=(chassis.wheel_motor[0].para.vel-chassis.wheel_motor[1].para.vel)*(-0.0603f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
+//        chassis.x_filter=chassis.x_filter+chassis_move.x_filter+chassis.v_filter*((float)OBSERVE_TIME/1000.0f);
 
-        osDelay(OBSERVE_TIME);
+//        chassis.v_filter=(BSP::Motor::BM::MotorM1505R.getVelocityRads(1)-BSP::Motor::BM::MotorM1505L.getVelocityRads(1))*(-0.09f)/2.0f;//0.0603是轮子半径，电机反馈的是角速度，乘半径后得到线速度，数学模型中定义的是轮子顺时针为正，所以要乘个负号
+//        chassis.x_filter+=chassis.v_filter*((float)1/1000.0f);
+
+        osDelay(1);
     }
 }
